@@ -5,6 +5,8 @@ import { EntityTable, useTableMutations } from "@/components/admin/entity-table"
 import { PageBackground } from "@/components/site-chrome";
 import {
   categoriesQuery,
+  forumRepliesQuery,
+  forumThreadsQuery,
   contentPagesQuery,
   gramsLabel,
   money,
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { title: "Store admin — manage products, prices and payments" },
-      { name: "description", content: "Internal control panel for catalogue, gram pricing, crypto addresses, shipping, pages and orders." },
+      { name: "description", content: "Internal control panel for catalogue, licence pricing, crypto addresses, shipping, pages and orders." },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Store admin" },
       { property: "og:description", content: "Internal control panel." },
@@ -28,7 +30,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Orders"] as const;
+const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Forum", "Orders"] as const;
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
@@ -67,6 +69,7 @@ function AdminPage() {
           {tab === "Shipping" && <ShippingPanel />}
           {tab === "Settings" && <SettingsPanel />}
           {tab === "Pages" && <PagesPanel />}
+          {tab === "Forum" && <ForumPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
       </main>
@@ -83,7 +86,7 @@ function ProductsPanel() {
     <>
       <EntityTable
         title="Products"
-        description="Name, description and category. Prices per gram tier are managed below each product."
+        description="Name, description and category. Licence seat tiers are managed below each product."
         table="products"
         rows={(products ?? []).map((p) => ({
           id: p.id,
@@ -117,7 +120,7 @@ function ProductsPanel() {
       />
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-primary">Gram pricing</h3>
+        <h3 className="text-lg font-semibold text-primary">Licence pricing</h3>
         {(products ?? []).map((p) => (
           <PricesTable key={p.id} productId={p.id} name={p.name} prices={p.product_prices} />
         ))}
@@ -138,11 +141,11 @@ function PricesTable({
   return (
     <EntityTable
       title={name}
-      description={`${prices.length} weight tiers — grams and the price charged for that weight.`}
+      description={`${prices.length} licence tiers — seat count and the price charged for that tier.`}
       table="product_prices"
       rows={prices.map((pr) => ({ id: pr.id, grams: pr.grams, price: pr.price, sort_order: pr.sort_order }))}
       columns={[
-        { key: "grams", label: "Grams", type: "number", width: "7rem" },
+        { key: "grams", label: "Seats", type: "number", width: "7rem" },
         { key: "price", label: "Price", type: "number", width: "7rem" },
         { key: "sort_order", label: "Order", type: "number", width: "5rem" },
       ]}
@@ -382,5 +385,51 @@ function OrderDetails({ id }: { id: string }) {
         <span className="font-semibold">Total {money(Number(order.total))}</span>
       </p>
     </div>
+  );
+}
+
+function ForumPanel() {
+  const { data: threads } = useQuery(forumThreadsQuery);
+  const { data: replies } = useQuery(forumRepliesQuery);
+  return (
+    <>
+      <EntityTable
+        title="Guide threads"
+        description="Post guides, pin the important ones and lock threads that should stop receiving replies."
+        table="forum_threads"
+        rows={(threads ?? []) as unknown as Record<string, unknown>[]}
+        columns={[
+          { key: "title", label: "Title", width: "16rem" },
+          { key: "slug", label: "Slug" },
+          { key: "category", label: "Category" },
+          { key: "author", label: "Author" },
+          { key: "body", label: "Body", type: "textarea", width: "24rem" },
+          { key: "is_pinned", label: "Pinned", type: "boolean" },
+          { key: "is_locked", label: "Locked", type: "boolean" },
+        ]}
+        queryKeys={[["forum_threads"]]}
+        newRowDefaults={{
+          title: "",
+          slug: `guide-${Math.random().toString(36).slice(2, 8)}`,
+          category: "Guides",
+          author: "nullsector",
+          body: "",
+          is_pinned: false,
+          is_locked: false,
+        }}
+      />
+      <EntityTable
+        title="Replies"
+        description="Moderate community replies."
+        table="forum_replies"
+        rows={(replies ?? []) as unknown as Record<string, unknown>[]}
+        columns={[
+          { key: "author", label: "Author" },
+          { key: "body", label: "Body", type: "textarea", width: "28rem" },
+        ]}
+        queryKeys={[["forum_replies"]]}
+        newRowDefaults={{ thread_id: threads?.[0]?.id ?? null, author: "nullsector", body: "" }}
+      />
+    </>
   );
 }
