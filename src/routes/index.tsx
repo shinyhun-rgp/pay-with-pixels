@@ -13,17 +13,18 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Shop — discreet worldwide delivery" },
+      { title: "Security Software Store — licenses delivered instantly" },
       {
         name: "description",
-        content: "Browse the catalogue and order by the gram. Discreet packaging and crypto-only payment.",
+        content: "Buy EDR, SIEM, firewall, pentest and encryption software licenses. Signed builds, crypto-only checkout.",
       },
-      { property: "og:title", content: "Shop — discreet worldwide delivery" },
-      { property: "og:description", content: "Order by the gram with discreet worldwide shipping." },
+      { property: "og:title", content: "Security Software Store" },
+      { property: "og:description", content: "Licensed security tooling for blue and red teams, delivered instantly." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: ShopPage,
 });
 
