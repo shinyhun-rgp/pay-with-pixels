@@ -13,17 +13,18 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Shop — discreet worldwide delivery" },
+      { title: "Security Software Store — licenses delivered instantly" },
       {
         name: "description",
-        content: "Browse the catalogue and order by the gram. Discreet packaging and crypto-only payment.",
+        content: "Buy EDR, SIEM, firewall, pentest and encryption software licenses. Signed builds, crypto-only checkout.",
       },
-      { property: "og:title", content: "Shop — discreet worldwide delivery" },
-      { property: "og:description", content: "Order by the gram with discreet worldwide shipping." },
+      { property: "og:title", content: "Security Software Store" },
+      { property: "og:description", content: "Licensed security tooling for blue and red teams, delivered instantly." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+
   component: ShopPage,
 });
 
@@ -44,11 +45,26 @@ function ShopPage() {
 
   return (
     <PageWithSidebar>
-      <h2 className="text-3xl font-bold text-primary">{activeCategory ? activeCategory.name : "All products"}</h2>
-      <p className="mt-2 text-sm text-foreground/70">
-        {q ? `Results for “${q}”. ` : ""}
-        Every product is priced per gram — pick a weight on the product page.
-      </p>
+      <section className="relative overflow-hidden rounded border border-border bg-card/60 p-6">
+        <div aria-hidden className="absolute inset-0 cyber-grid opacity-25" />
+        <div className="relative">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[color:var(--signal)]">
+            ./deploy --secure
+          </p>
+          <h1 className="mt-2 text-3xl md:text-4xl font-bold text-primary text-glow">
+            {activeCategory ? activeCategory.name : "Security software, licensed by the seat"}
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm text-foreground/70">
+            {q ? `Results for “${q}”. ` : ""}
+            Signed builds, SBOM attached, 12 months of updates. Pick a seat tier on any product page and pay in crypto.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3 font-mono text-[11px] text-muted-foreground">
+            <span className="rounded border border-border px-2 py-1">Instant key delivery</span>
+            <span className="rounded border border-border px-2 py-1">Crypto-only</span>
+            <span className="rounded border border-border px-2 py-1">Reproducible builds</span>
+          </div>
+        </div>
+      </section>
 
       {isLoading && <p className="mt-10 text-sm text-muted-foreground">Loading products…</p>}
 
@@ -62,14 +78,15 @@ function ShopPage() {
             key={p.id}
             to="/product/$slug"
             params={{ slug: p.slug }}
-            className="bg-card/95 border border-border rounded p-3 text-center hover:shadow-lg transition"
+            className="group rounded border border-border bg-card/60 p-3 transition hover:border-primary/60 hover:glow-border"
           >
             <ProductImage imageUrl={p.image_url} name={p.name} className="aspect-[4/3] rounded mb-3" />
-            <h3 className="text-primary font-semibold text-sm leading-tight">{p.name}</h3>
-            <p className="text-xs text-muted-foreground mt-1">{priceRange(p, symbol)}</p>
+            <h3 className="text-sm font-semibold leading-tight text-foreground group-hover:text-primary">{p.name}</h3>
+            <p className="mt-1 font-mono text-xs text-primary">{priceRange(p, symbol)}</p>
           </Link>
         ))}
       </div>
+
     </PageWithSidebar>
   );
 }

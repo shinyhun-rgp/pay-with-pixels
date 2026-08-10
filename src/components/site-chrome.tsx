@@ -1,21 +1,21 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Mail, Search, ShoppingCart } from "lucide-react";
+import { Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import leavesBg from "@/assets/leaves-bg.jpg";
 import { ProductImage } from "@/components/product-image";
 import { useCart } from "@/lib/cart";
 import { categoriesQuery, money, priceRange, productsQuery, settingsMap, settingsQuery } from "@/lib/store";
 
 const NAV = [
-  { label: "HOME", to: "/" },
+  { label: "STORE", to: "/" },
+  { label: "GUIDES", to: "/guides" },
   { label: "ORDER TRACKING", to: "/order-tracking" },
-  { label: "PAYMENT AND DELIVERY", to: "/payment-and-delivery" },
-  { label: "DELIVERY METHOD", to: "/delivery-method" },
-  { label: "DELIVERY TIME", to: "/delivery-time" },
-  { label: "SHIPPING & PACKAGING", to: "/shipping-and-packaging" },
-  { label: "ABOUT US", to: "/about" },
-  { label: "CONTACT US", to: "/contact" },
+  { label: "PAYMENT", to: "/payment-and-delivery" },
+  { label: "LICENSE DELIVERY", to: "/delivery-method" },
+  { label: "ACTIVATION TIME", to: "/delivery-time" },
+  { label: "SECURITY & COMPLIANCE", to: "/shipping-and-packaging" },
+  { label: "ABOUT", to: "/about" },
+  { label: "CONTACT", to: "/contact" },
 ] as const;
 
 export function useSettings() {
@@ -37,36 +37,47 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="relative">
-      <div
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.55)), url(${leavesBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="mx-auto max-w-7xl px-6 py-8 flex flex-col md:flex-row md:items-center gap-6">
+    <header className="relative border-b border-border">
+      <div className="relative overflow-hidden">
+        <div aria-hidden className="absolute inset-0 cyber-grid opacity-30" />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(900px 320px at 15% -20%, oklch(0.82 0.14 200 / 0.22), transparent 70%), radial-gradient(700px 300px at 90% 0%, oklch(0.6 0.2 300 / 0.16), transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-6 py-8 flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex-1">
-            <Link to="/" className="inline-block">
-              <h1 className="text-5xl md:text-6xl leading-none text-primary" style={{ fontFamily: "var(--font-brand)" }}>
-                {settings.store_name ?? ""}
-              </h1>
+            <Link to="/" className="inline-flex items-center gap-2">
+              <span className="grid h-10 w-10 place-items-center rounded border border-primary/40 bg-primary/10 text-primary glow-border">
+                <Terminal className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block text-2xl md:text-3xl font-bold text-primary text-glow font-mono tracking-tight">
+                  {settings.store_name ?? ""}
+                </span>
+                <span className="block text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                  secure software supply
+                </span>
+              </span>
             </Link>
-            <p className="mt-3 text-primary font-semibold max-w-sm">{settings.tagline ?? ""}</p>
+            <p className="mt-3 text-sm text-foreground/75 max-w-sm">{settings.tagline ?? ""}</p>
             <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1">
               <Mail className="h-3 w-3" /> {settings.contact_email ?? ""}
             </p>
           </div>
 
           <form onSubmit={submit} className="flex-1 max-w-xl w-full">
-            <div className="flex items-stretch bg-card border border-border rounded overflow-hidden shadow-sm">
+            <div className="flex items-stretch bg-card/80 border border-border rounded overflow-hidden font-mono text-sm">
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 aria-label="Category"
-                className="px-3 text-sm bg-muted border-r border-border outline-none"
+                className="px-3 bg-muted/60 border-r border-border outline-none text-xs"
               >
-                <option value="all">All Categories</option>
+                <option value="all">All categories</option>
                 {(categories ?? []).map((c) => (
                   <option key={c.slug} value={c.slug}>
                     {c.name}
@@ -76,14 +87,18 @@ export function SiteHeader() {
               <input
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
-                placeholder={settings.search_placeholder ?? "Search…"}
+                placeholder={settings.search_placeholder ?? "search tooling…"}
                 aria-label="Search products"
-                className="flex-1 px-3 py-2 text-sm outline-none bg-card"
+                className="flex-1 px-3 py-2 outline-none bg-transparent"
               />
               <button type="submit" className="px-4 bg-primary text-primary-foreground" aria-label="Search">
                 <Search className="h-4 w-4" />
               </button>
             </div>
+            <p className="mt-2 text-[11px] text-muted-foreground flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3 text-[color:var(--signal)]" /> Signed builds · instant license delivery ·
+              crypto-only
+            </p>
           </form>
 
           <Link to="/cart" className="flex items-center gap-2 text-primary hover:opacity-80">
@@ -95,13 +110,15 @@ export function SiteHeader() {
                 </span>
               )}
             </span>
-            <span className="text-sm font-semibold">{money(cart.subtotal, settings.currency_symbol ?? "$")}</span>
+            <span className="text-sm font-semibold font-mono">
+              {money(cart.subtotal, settings.currency_symbol ?? "$")}
+            </span>
           </Link>
         </div>
       </div>
 
-      <nav className="bg-card/95 backdrop-blur border-y border-border">
-        <ul className="mx-auto max-w-7xl px-6 py-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] tracking-wide text-foreground/80">
+      <nav className="bg-card/70 backdrop-blur border-t border-border">
+        <ul className="mx-auto max-w-7xl px-6 py-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-mono tracking-widest text-foreground/70">
           {NAV.map((item) => (
             <li key={item.to}>
               <Link
@@ -140,8 +157,8 @@ export function ShopSidebar() {
   return (
     <aside className="w-full lg:w-72 shrink-0 space-y-8 text-sm">
       <section>
-        <h3 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase border-b border-border pb-2">
-          Search products
+        <h3 className="text-[11px] font-mono tracking-[0.25em] text-muted-foreground uppercase border-b border-border pb-2">
+          / search
         </h3>
         <form
           className="mt-3 flex gap-2"
@@ -153,31 +170,29 @@ export function ShopSidebar() {
           <input
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            placeholder={settings.search_placeholder ?? "Search…"}
+            placeholder={settings.search_placeholder ?? "search tooling…"}
             aria-label="Search products"
-            className="flex-1 min-w-0 px-3 py-1.5 border border-border rounded bg-card outline-none"
+            className="flex-1 min-w-0 px-3 py-1.5 border border-border rounded bg-card/70 outline-none font-mono text-xs"
           />
-          <button className="px-4 py-1.5 bg-primary text-primary-foreground rounded text-xs font-semibold">
-            Search
-          </button>
+          <button className="px-4 py-1.5 bg-primary text-primary-foreground rounded text-xs font-semibold">Go</button>
         </form>
       </section>
 
       <section>
-        <h3 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase border-b border-border pb-2">
-          Product categories
+        <h3 className="text-[11px] font-mono tracking-[0.25em] text-muted-foreground uppercase border-b border-border pb-2">
+          / categories
         </h3>
         <div className="mt-3 space-y-4">
           {[...groups.entries()].map(([group, list]) => (
             <div key={group}>
-              <p className="text-primary font-semibold">{group}</p>
+              <p className="text-primary font-semibold text-xs uppercase tracking-wider">{group}</p>
               <ul className="mt-1 space-y-1">
                 {(list ?? []).map((c) => (
                   <li key={c.id}>
                     <Link
                       to="/"
                       search={{ category: c.slug }}
-                      className="block pl-3 py-1 border-b border-border/60 text-foreground/75 hover:text-primary"
+                      className="block pl-3 py-1 border-b border-border/60 text-foreground/70 hover:text-primary"
                     >
                       {c.name}
                     </Link>
@@ -190,8 +205,8 @@ export function ShopSidebar() {
       </section>
 
       <section>
-        <h3 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase border-b border-border pb-2">
-          Products
+        <h3 className="text-[11px] font-mono tracking-[0.25em] text-muted-foreground uppercase border-b border-border pb-2">
+          / featured
         </h3>
         <ul className="mt-3 space-y-3">
           {(products ?? [])
@@ -205,7 +220,7 @@ export function ShopSidebar() {
                     <span className="block text-primary font-semibold text-[13px] leading-tight group-hover:underline">
                       {p.name}
                     </span>
-                    <span className="block text-xs text-muted-foreground mt-0.5">{priceRange(p, symbol)}</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5 font-mono">{priceRange(p, symbol)}</span>
                   </span>
                 </Link>
               </li>
@@ -219,10 +234,13 @@ export function ShopSidebar() {
 export function SiteFooter() {
   const settings = useSettings();
   return (
-    <footer className="border-t border-border bg-card/80 backdrop-blur mt-10">
-      <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+    <footer className="border-t border-border bg-card/60 backdrop-blur mt-10">
+      <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground">
         <p>{settings.footer_text ?? ""}</p>
         <div className="flex gap-4">
+          <Link to="/guides" className="text-primary hover:underline">
+            Guides
+          </Link>
           <Link to="/payment-and-delivery" className="text-primary hover:underline">
             Payment
           </Link>
@@ -241,12 +259,15 @@ export function SiteFooter() {
 export function PageBackground({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen relative flex flex-col">
+      <div aria-hidden className="fixed inset-0 -z-10 cyber-grid opacity-20" />
       <div
         aria-hidden
-        className="fixed inset-0 -z-10 opacity-40"
-        style={{ backgroundImage: `url(${leavesBg})`, backgroundSize: "600px" }}
+        className="fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(1000px 500px at 80% -10%, oklch(0.82 0.14 200 / 0.10), transparent 70%), radial-gradient(900px 500px at 0% 100%, oklch(0.6 0.2 300 / 0.10), transparent 70%)",
+        }}
       />
-      <div aria-hidden className="fixed inset-0 -z-10 bg-background/60" />
       <SiteHeader />
       <div className="flex-1">{children}</div>
       <SiteFooter />
@@ -271,7 +292,7 @@ export function InfoPage({ title, lead, children }: { title: string; lead?: stri
   return (
     <PageBackground>
       <main className="mx-auto max-w-3xl px-6 py-12">
-        <h2 className="text-3xl font-bold text-primary">{title}</h2>
+        <h2 className="text-3xl font-bold text-primary text-glow">{title}</h2>
         {lead && <p className="mt-3 text-foreground/70">{lead}</p>}
         <div className="mt-8 space-y-6">{children}</div>
       </main>
@@ -281,8 +302,8 @@ export function InfoPage({ title, lead, children }: { title: string; lead?: stri
 
 export function InfoCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="bg-card/90 backdrop-blur border border-border rounded p-5">
-      <h3 className="font-semibold text-primary">{title}</h3>
+    <section className="bg-card/70 backdrop-blur border border-border rounded p-5">
+      <h3 className="font-semibold text-primary font-mono text-sm">{title}</h3>
       <div className="mt-2 text-sm text-foreground/75 space-y-2">{children}</div>
     </section>
   );

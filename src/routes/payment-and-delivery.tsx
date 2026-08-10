@@ -48,7 +48,7 @@ function PaymentAndDelivery() {
       </InfoCard>
       <InfoCard title="How delivery works">
         <p>
-          Orders are priced and shipped by weight in grams. Once payment confirms, the parcel is packed and dispatched
+          Licenses are priced per seat. Once payment confirms, keys and signed installers are issued
           — see{" "}
           <Link to="/shipping-and-packaging" className="text-primary hover:underline">
             shipping and packaging

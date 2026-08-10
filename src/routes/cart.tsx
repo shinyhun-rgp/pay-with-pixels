@@ -8,7 +8,7 @@ export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
       { title: "Your cart — review your order" },
-      { name: "description", content: "Review the weights and quantities in your basket before checking out." },
+      { name: "description", content: "Review your license tiers and quantities before checking out." },
       { property: "og:title", content: "Your cart" },
       { property: "og:description", content: "Review your order before checkout." },
       { name: "robots", content: "noindex" },
@@ -42,7 +42,7 @@ function CartPage() {
               <thead className="bg-muted/60 text-left">
                 <tr>
                   <th className="px-4 py-2 font-semibold">Product</th>
-                  <th className="px-4 py-2 font-semibold">Weight</th>
+                  <th className="px-4 py-2 font-semibold">License</th>
                   <th className="px-4 py-2 font-semibold">Price</th>
                   <th className="px-4 py-2 font-semibold">Qty</th>
                   <th className="px-4 py-2 font-semibold">Subtotal</th>

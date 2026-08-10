@@ -9,13 +9,13 @@ import { categoriesQuery, gramsLabel, money, priceRange, productsQuery } from "@
 
 export const Route = createFileRoute("/product/$slug")({
   head: ({ params }) => {
-    const title = `${params.slug.replace(/-/g, " ")} — order by the gram`;
+    const title = `${params.slug.replace(/-/g, " ")} — security software licence`;
     return {
       meta: [
         { title },
-        { name: "description", content: "Choose a weight in grams and check out with crypto. Discreet packaging." },
+        { name: "description", content: "Choose a seat tier and check out with crypto. Instant key delivery." },
         { property: "og:title", content: title },
-        { property: "og:description", content: "Choose a weight in grams and check out with crypto." },
+        { property: "og:description", content: "Choose a seat tier and check out with crypto." },
         { property: "og:type", content: "product" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
@@ -113,7 +113,7 @@ function ProductPage() {
           <p className="mt-4 text-sm text-foreground/75">{product.description}</p>
 
           <div className="mt-6">
-            <span className="text-sm font-semibold">Weight</span>
+            <span className="text-sm font-semibold">Licence tier</span>
             <div className="mt-2 flex flex-wrap gap-2">
               {tiers.map((t) => (
                 <button
@@ -128,7 +128,7 @@ function ProductPage() {
                   {gramsLabel(Number(t.grams))} — {money(Number(t.price), symbol)}
                 </button>
               ))}
-              {tiers.length === 0 && <p className="text-sm text-muted-foreground">No weights configured yet.</p>}
+              {tiers.length === 0 && <p className="text-sm text-muted-foreground">No licence tiers configured yet.</p>}
             </div>
           </div>
 

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/delivery-method")({
   head: () => ({
     meta: [
       { title: "Delivery Method — shipping options" },
-      { name: "description", content: "Standard and express delivery options, how parcels travel and what tracking you get." },
+      { name: "description", content: "Standard and priority license provisioning options and what each includes." },
       { property: "og:title", content: "Delivery Method" },
       { property: "og:description", content: "Standard and express shipping options for every order." },
     ],
@@ -32,8 +32,8 @@ function DeliveryMethodPage() {
       </InfoCard>
       <InfoCard title="Tracking">
         <p>
-          International parcel orders get tracking if an email address is supplied during the order. Tracking codes are
-          emailed as soon as the parcel is scanned by the carrier.
+          License keys and signed installer links are emailed as soon as payment confirms. Enterprise onboarding details are
+          sent by the same channel within one business day.
         </p>
       </InfoCard>
       <InfoCard title="Address accuracy">

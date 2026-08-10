@@ -178,9 +178,13 @@ export function money(value: number, symbol = "$"): string {
   return `${symbol}${Number(value || 0).toFixed(2)}`;
 }
 
-export function gramsLabel(grams: number): string {
-  return grams >= 1000 ? `${grams / 1000}kg` : `${grams}g`;
+/** License tier label. The stored numeric tier is the number of seats/devices. */
+export function gramsLabel(seats: number): string {
+  const n = Number(seats) || 0;
+  if (n >= 1000) return "Unlimited site licence";
+  return n === 1 ? "1 seat" : `${n} seats`;
 }
+
 
 export function priceRange(product: Product, symbol = "$"): string {
   const prices = product.product_prices.map((p) => Number(p.price));
@@ -200,10 +204,11 @@ export const slugify = (v: string) =>
 export function productGradient(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  const h1 = hash % 360;
-  const h2 = (h1 + 40 + (hash % 80)) % 360;
-  return `linear-gradient(135deg, hsl(${h1} 55% 55%), hsl(${h2} 60% 40%))`;
+  const h1 = 185 + (hash % 90); // cyan → violet band only
+  const h2 = (h1 + 30 + (hash % 40)) % 360;
+  return `linear-gradient(135deg, hsl(${h1} 70% 22%), hsl(${h2} 65% 12%))`;
 }
+
 
 /**
  * Background for a product tile: the image when a usable URL is set,
@@ -216,3 +221,51 @@ export function productBackground(imageUrl: string | null | undefined, seed: str
   const safe = url.replace(/["\\]/g, encodeURIComponent);
   return `center/cover no-repeat url("${safe}"), ${productGradient(seed)}`;
 }
+
+export type ForumThread = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  author: string;
+  body: string;
+  is_pinned: boolean;
+  is_locked: boolean;
+  views: number;
+  created_at: string;
+};
+
+export type ForumReply = {
+  id: string;
+  thread_id: string;
+  author: string;
+  body: string;
+  created_at: string;
+};
+
+export const forumThreadsQuery = queryOptions({
+  queryKey: ["forum_threads"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("forum_threads")
+      .select(sel("*"))
+      .order("is_pinned", { ascending: false })
+      .order("created_at", { ascending: false })
+      .returns<ForumThread[]>();
+    if (error) throw error;
+    return data ?? [];
+  },
+});
+
+export const forumRepliesQuery = queryOptions({
+  queryKey: ["forum_replies"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("forum_replies")
+      .select(sel("*"))
+      .order("created_at")
+      .returns<ForumReply[]>();
+    if (error) throw error;
+    return data ?? [];
+  },
+});
