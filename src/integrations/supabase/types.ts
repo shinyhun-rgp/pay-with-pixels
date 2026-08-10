@@ -65,6 +65,77 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_replies: {
+        Row: {
+          author: string
+          body: string
+          created_at: string
+          id: string
+          thread_id: string
+        }
+        Insert: {
+          author?: string
+          body?: string
+          created_at?: string
+          id?: string
+          thread_id: string
+        }
+        Update: {
+          author?: string
+          body?: string
+          created_at?: string
+          id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_threads: {
+        Row: {
+          author: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_locked: boolean
+          is_pinned: boolean
+          slug: string
+          title: string
+          views: number
+        }
+        Insert: {
+          author?: string
+          body?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_locked?: boolean
+          is_pinned?: boolean
+          slug: string
+          title: string
+          views?: number
+        }
+        Update: {
+          author?: string
+          body?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_locked?: boolean
+          is_pinned?: boolean
+          slug?: string
+          title?: string
+          views?: number
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           grams: number
