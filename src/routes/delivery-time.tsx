@@ -6,13 +6,13 @@ import { contentPagesQuery } from "@/lib/store";
 export const Route = createFileRoute("/delivery-time")({
   head: () => ({
     meta: [
-      { title: "Delivery Time — worldwide shipping estimates" },
+      { title: "License Activation Time — how fast keys arrive" },
       {
         name: "description",
-        content: "Delivery estimates per region, tracking rules and the exact address format we need for parcels.",
+        content: "Confirmation times per coin and how license keys are delivered after payment.",
       },
-      { property: "og:title", content: "Delivery Time" },
-      { property: "og:description", content: "Regional delivery estimates and address formatting." },
+      { property: "og:title", content: "License Activation Time" },
+      { property: "og:description", content: "Confirmation times and license key delivery." },
     ],
   }),
   component: () => <ContentPage slug="delivery-time" />,
