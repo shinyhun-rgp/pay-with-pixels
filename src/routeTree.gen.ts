@@ -23,6 +23,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as ApiPublicResolveImageRouteImport } from './routes/api/public/resolve-image'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -95,6 +96,11 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/guides/$slug',
+  path: '/guides/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicResolveImageRoute = ApiPublicResolveImageRouteImport.update({
   id: '/api/public/resolve-image',
   path: '/api/public/resolve-image',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/payment-and-delivery': typeof PaymentAndDeliveryRoute
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/guides/': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/payment-and-delivery': typeof PaymentAndDeliveryRoute
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/guides': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/payment-and-delivery': typeof PaymentAndDeliveryRoute
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/guides/': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/payment-and-delivery'
     | '/shipping-and-packaging'
     | '/sitemap.xml'
+    | '/guides/$slug'
     | '/product/$slug'
     | '/guides/'
     | '/api/public/resolve-image'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/payment-and-delivery'
     | '/shipping-and-packaging'
     | '/sitemap.xml'
+    | '/guides/$slug'
     | '/product/$slug'
     | '/guides'
     | '/api/public/resolve-image'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/payment-and-delivery'
     | '/shipping-and-packaging'
     | '/sitemap.xml'
+    | '/guides/$slug'
     | '/product/$slug'
     | '/guides/'
     | '/api/public/resolve-image'
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   PaymentAndDeliveryRoute: typeof PaymentAndDeliveryRoute
   ShippingAndPackagingRoute: typeof ShippingAndPackagingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  GuidesSlugRoute: typeof GuidesSlugRoute
   ProductSlugRoute: typeof ProductSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   ApiPublicResolveImageRoute: typeof ApiPublicResolveImageRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/guides/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/resolve-image': {
       id: '/api/public/resolve-image'
       path: '/api/public/resolve-image'
@@ -348,6 +368,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentAndDeliveryRoute: PaymentAndDeliveryRoute,
   ShippingAndPackagingRoute: ShippingAndPackagingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  GuidesSlugRoute: GuidesSlugRoute,
   ProductSlugRoute: ProductSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   ApiPublicResolveImageRoute: ApiPublicResolveImageRoute,
