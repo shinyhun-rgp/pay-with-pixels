@@ -178,9 +178,13 @@ export function money(value: number, symbol = "$"): string {
   return `${symbol}${Number(value || 0).toFixed(2)}`;
 }
 
-export function gramsLabel(grams: number): string {
-  return grams >= 1000 ? `${grams / 1000}kg` : `${grams}g`;
+/** License tier label. The stored numeric tier is the number of seats/devices. */
+export function gramsLabel(seats: number): string {
+  const n = Number(seats) || 0;
+  if (n >= 1000) return "Unlimited site licence";
+  return n === 1 ? "1 seat" : `${n} seats`;
 }
+
 
 export function priceRange(product: Product, symbol = "$"): string {
   const prices = product.product_prices.map((p) => Number(p.price));
