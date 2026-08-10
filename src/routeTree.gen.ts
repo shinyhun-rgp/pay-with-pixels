@@ -21,6 +21,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as ApiPublicResolveImageRouteImport } from './routes/api/public/resolve-image'
 
@@ -84,6 +85,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/guides/': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/guides': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/guides/': typeof GuidesIndexRoute
   '/api/public/resolve-image': typeof ApiPublicResolveImageRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/product/$slug'
+    | '/guides/'
     | '/api/public/resolve-image'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/product/$slug'
+    | '/guides'
     | '/api/public/resolve-image'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/product/$slug'
+    | '/guides/'
     | '/api/public/resolve-image'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   ShippingAndPackagingRoute: typeof ShippingAndPackagingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ProductSlugRoute: typeof ProductSlugRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
   ApiPublicResolveImageRoute: typeof ApiPublicResolveImageRoute
 }
 
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShippingAndPackagingRoute: ShippingAndPackagingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ProductSlugRoute: ProductSlugRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
   ApiPublicResolveImageRoute: ApiPublicResolveImageRoute,
 }
 export const routeTree = rootRouteImport

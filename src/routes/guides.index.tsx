@@ -6,7 +6,7 @@ import { PageBackground, RichText } from "@/components/site-chrome";
 import { supabase } from "@/integrations/supabase/client";
 import { forumRepliesQuery, forumThreadsQuery, slugify } from "@/lib/store";
 
-export const Route = createFileRoute("/guides")({
+export const Route = createFileRoute("/guides/")({
   head: () => ({
     meta: [
       { title: "Operator Guides & Forum — NullSector" },
