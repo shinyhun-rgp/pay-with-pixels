@@ -204,10 +204,11 @@ export const slugify = (v: string) =>
 export function productGradient(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  const h1 = hash % 360;
-  const h2 = (h1 + 40 + (hash % 80)) % 360;
-  return `linear-gradient(135deg, hsl(${h1} 55% 55%), hsl(${h2} 60% 40%))`;
+  const h1 = 185 + (hash % 90); // cyan → violet band only
+  const h2 = (h1 + 30 + (hash % 40)) % 360;
+  return `linear-gradient(135deg, hsl(${h1} 70% 22%), hsl(${h2} 65% 12%))`;
 }
+
 
 /**
  * Background for a product tile: the image when a usable URL is set,
