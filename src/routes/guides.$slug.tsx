@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Lock } from "lucide-react";
 import { useState } from "react";
+import { ForumGate } from "@/components/forum-gate";
 import { PageBackground, RichText } from "@/components/site-chrome";
 import { supabase } from "@/integrations/supabase/client";
 import { forumRepliesQuery, forumThreadsQuery } from "@/lib/store";
@@ -20,7 +21,11 @@ export const Route = createFileRoute("/guides/$slug")({
       ],
     };
   },
-  component: ThreadPage,
+  component: () => (
+    <ForumGate>
+      <ThreadPage />
+    </ForumGate>
+  ),
 });
 
 function ThreadPage() {

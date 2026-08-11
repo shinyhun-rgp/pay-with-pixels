@@ -10,16 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ShippingAndPackagingRouteImport } from './routes/shipping-and-packaging'
-import { Route as PaymentAndDeliveryRouteImport } from './routes/payment-and-delivery'
-import { Route as OrderTrackingRouteImport } from './routes/order-tracking'
-import { Route as DeliveryTimeRouteImport } from './routes/delivery-time'
-import { Route as DeliveryMethodRouteImport } from './routes/delivery-method'
-import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
@@ -29,36 +22,6 @@ import { Route as ApiPublicResolveImageRouteImport } from './routes/api/public/r
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShippingAndPackagingRoute = ShippingAndPackagingRouteImport.update({
-  id: '/shipping-and-packaging',
-  path: '/shipping-and-packaging',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentAndDeliveryRoute = PaymentAndDeliveryRouteImport.update({
-  id: '/payment-and-delivery',
-  path: '/payment-and-delivery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrderTrackingRoute = OrderTrackingRouteImport.update({
-  id: '/order-tracking',
-  path: '/order-tracking',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeliveryTimeRoute = DeliveryTimeRouteImport.update({
-  id: '/delivery-time',
-  path: '/delivery-time',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeliveryMethodRoute = DeliveryMethodRouteImport.update({
-  id: '/delivery-method',
-  path: '/delivery-method',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -74,11 +37,6 @@ const CartRoute = CartRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -109,16 +67,9 @@ const ApiPublicResolveImageRoute = ApiPublicResolveImageRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/contact': typeof ContactRoute
-  '/delivery-method': typeof DeliveryMethodRoute
-  '/delivery-time': typeof DeliveryTimeRoute
-  '/order-tracking': typeof OrderTrackingRoute
-  '/payment-and-delivery': typeof PaymentAndDeliveryRoute
-  '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -127,16 +78,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/contact': typeof ContactRoute
-  '/delivery-method': typeof DeliveryMethodRoute
-  '/delivery-time': typeof DeliveryTimeRoute
-  '/order-tracking': typeof OrderTrackingRoute
-  '/payment-and-delivery': typeof PaymentAndDeliveryRoute
-  '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -146,16 +90,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/contact': typeof ContactRoute
-  '/delivery-method': typeof DeliveryMethodRoute
-  '/delivery-time': typeof DeliveryTimeRoute
-  '/order-tracking': typeof OrderTrackingRoute
-  '/payment-and-delivery': typeof PaymentAndDeliveryRoute
-  '/shipping-and-packaging': typeof ShippingAndPackagingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -166,16 +103,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/admin'
     | '/cart'
     | '/checkout'
-    | '/contact'
-    | '/delivery-method'
-    | '/delivery-time'
-    | '/order-tracking'
-    | '/payment-and-delivery'
-    | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -184,16 +114,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/admin'
     | '/cart'
     | '/checkout'
-    | '/contact'
-    | '/delivery-method'
-    | '/delivery-time'
-    | '/order-tracking'
-    | '/payment-and-delivery'
-    | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -202,16 +125,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/about'
     | '/admin'
     | '/cart'
     | '/checkout'
-    | '/contact'
-    | '/delivery-method'
-    | '/delivery-time'
-    | '/order-tracking'
-    | '/payment-and-delivery'
-    | '/shipping-and-packaging'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -221,16 +137,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
-  ContactRoute: typeof ContactRoute
-  DeliveryMethodRoute: typeof DeliveryMethodRoute
-  DeliveryTimeRoute: typeof DeliveryTimeRoute
-  OrderTrackingRoute: typeof OrderTrackingRoute
-  PaymentAndDeliveryRoute: typeof PaymentAndDeliveryRoute
-  ShippingAndPackagingRoute: typeof ShippingAndPackagingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   ProductSlugRoute: typeof ProductSlugRoute
@@ -245,48 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shipping-and-packaging': {
-      id: '/shipping-and-packaging'
-      path: '/shipping-and-packaging'
-      fullPath: '/shipping-and-packaging'
-      preLoaderRoute: typeof ShippingAndPackagingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payment-and-delivery': {
-      id: '/payment-and-delivery'
-      path: '/payment-and-delivery'
-      fullPath: '/payment-and-delivery'
-      preLoaderRoute: typeof PaymentAndDeliveryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/order-tracking': {
-      id: '/order-tracking'
-      path: '/order-tracking'
-      fullPath: '/order-tracking'
-      preLoaderRoute: typeof OrderTrackingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/delivery-time': {
-      id: '/delivery-time'
-      path: '/delivery-time'
-      fullPath: '/delivery-time'
-      preLoaderRoute: typeof DeliveryTimeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/delivery-method': {
-      id: '/delivery-method'
-      path: '/delivery-method'
-      fullPath: '/delivery-method'
-      preLoaderRoute: typeof DeliveryMethodRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -308,13 +175,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -357,16 +217,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
-  ContactRoute: ContactRoute,
-  DeliveryMethodRoute: DeliveryMethodRoute,
-  DeliveryTimeRoute: DeliveryTimeRoute,
-  OrderTrackingRoute: OrderTrackingRoute,
-  PaymentAndDeliveryRoute: PaymentAndDeliveryRoute,
-  ShippingAndPackagingRoute: ShippingAndPackagingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   ProductSlugRoute: ProductSlugRoute,
@@ -376,13 +229,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

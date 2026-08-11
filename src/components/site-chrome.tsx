@@ -9,14 +9,9 @@ import { categoriesQuery, money, priceRange, productsQuery, settingsMap, setting
 const NAV = [
   { label: "STORE", to: "/" },
   { label: "GUIDES", to: "/guides" },
-  { label: "ORDER TRACKING", to: "/order-tracking" },
-  { label: "PAYMENT", to: "/payment-and-delivery" },
-  { label: "LICENSE DELIVERY", to: "/delivery-method" },
-  { label: "ACTIVATION TIME", to: "/delivery-time" },
-  { label: "SECURITY & COMPLIANCE", to: "/shipping-and-packaging" },
-  { label: "ABOUT", to: "/about" },
-  { label: "CONTACT", to: "/contact" },
+  { label: "CART", to: "/cart" },
 ] as const;
+
 
 export function useSettings() {
   const { data } = useQuery(settingsQuery);
@@ -241,12 +236,10 @@ export function SiteFooter() {
           <Link to="/guides" className="text-primary hover:underline">
             Guides
           </Link>
-          <Link to="/payment-and-delivery" className="text-primary hover:underline">
-            Payment
+          <Link to="/cart" className="text-primary hover:underline">
+            Cart
           </Link>
-          <Link to="/order-tracking" className="text-primary hover:underline">
-            Track order
-          </Link>
+
           <Link to="/admin" className="text-primary hover:underline">
             Admin
           </Link>
