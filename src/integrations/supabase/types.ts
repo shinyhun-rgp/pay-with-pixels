@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_access_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_used: boolean
+          label: string
+          used_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          label?: string
+          used_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          label?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       forum_replies: {
         Row: {
           author: string
