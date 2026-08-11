@@ -430,6 +430,31 @@ function ForumPanel() {
         queryKeys={[["forum_replies"]]}
         newRowDefaults={{ thread_id: threads?.[0]?.id ?? null, author: "nullsector", body: "" }}
       />
+      <AccessCodesTable />
     </>
   );
 }
+
+function AccessCodesTable() {
+  const { data: codes } = useQuery(forumAccessCodesQuery);
+  return (
+    <EntityTable
+      title="Forum access codes"
+      description="One-off $50 membership codes. Add a code after a buyer pays, then send it to them — it locks itself once redeemed."
+      table="forum_access_codes"
+      rows={(codes ?? []) as unknown as Record<string, unknown>[]}
+      columns={[
+        { key: "code", label: "Code", width: "14rem" },
+        { key: "label", label: "Note", width: "16rem" },
+        { key: "is_used", label: "Redeemed", type: "boolean" },
+      ]}
+      queryKeys={[["forum_access_codes"]]}
+      newRowDefaults={{
+        code: `NS-FORUM-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+        label: "",
+        is_used: false,
+      }}
+    />
+  );
+}
+
