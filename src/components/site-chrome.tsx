@@ -9,14 +9,9 @@ import { categoriesQuery, money, priceRange, productsQuery, settingsMap, setting
 const NAV = [
   { label: "STORE", to: "/" },
   { label: "GUIDES", to: "/guides" },
-  { label: "ORDER TRACKING", to: "/order-tracking" },
-  { label: "PAYMENT", to: "/payment-and-delivery" },
-  { label: "LICENSE DELIVERY", to: "/delivery-method" },
-  { label: "ACTIVATION TIME", to: "/delivery-time" },
-  { label: "SECURITY & COMPLIANCE", to: "/shipping-and-packaging" },
-  { label: "ABOUT", to: "/about" },
-  { label: "CONTACT", to: "/contact" },
+  { label: "CART", to: "/cart" },
 ] as const;
+
 
 export function useSettings() {
   const { data } = useQuery(settingsQuery);
