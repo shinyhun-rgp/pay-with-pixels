@@ -112,8 +112,8 @@ function CheckoutPage() {
             <p className="font-semibold">{money(placed.total, symbol)}</p>
           </div>
         </div>
-        <Link to="/order-tracking" className="mt-6 inline-block text-sm text-primary hover:underline">
-          Track this order
+        <Link to="/" className="mt-6 inline-block text-sm text-primary hover:underline">
+          Continue shopping
         </Link>
       </PageWithSidebar>
     );
