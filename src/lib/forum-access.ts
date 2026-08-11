@@ -25,6 +25,8 @@ export const forumAccessCodesQuery = queryOptions({
 });
 
 const STORAGE_KEY = "nullsector.forum.access";
+const listeners = new Set<() => void>();
+const emit = () => listeners.forEach((fn) => fn());
 
 /** Local unlock state for the paid forum. Set once a valid access code is redeemed. */
 export function useForumAccess() {
@@ -32,18 +34,23 @@ export function useForumAccess() {
   const [code, setCode] = useState<string | null>(null);
 
   useEffect(() => {
-    setCode(localStorage.getItem(STORAGE_KEY));
+    const sync = () => setCode(localStorage.getItem(STORAGE_KEY));
+    sync();
     setReady(true);
+    listeners.add(sync);
+    return () => {
+      listeners.delete(sync);
+    };
   }, []);
 
   const unlock = useCallback((value: string) => {
     localStorage.setItem(STORAGE_KEY, value);
-    setCode(value);
+    emit();
   }, []);
 
   const lock = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
-    setCode(null);
+    emit();
   }, []);
 
   return { ready, hasAccess: Boolean(code), code, unlock, lock };
