@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageSquare, Pin, Lock, Plus } from "lucide-react";
 import { useState } from "react";
+import { ForumGate } from "@/components/forum-gate";
 import { PageBackground, RichText } from "@/components/site-chrome";
 import { supabase } from "@/integrations/supabase/client";
 import { forumRepliesQuery, forumThreadsQuery, slugify } from "@/lib/store";
@@ -20,7 +21,11 @@ export const Route = createFileRoute("/guides/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: GuidesPage,
+  component: () => (
+    <ForumGate>
+      <GuidesPage />
+    </ForumGate>
+  ),
 });
 
 const CATEGORIES = ["Guides", "Tooling", "Hardening", "Threat Intel", "Support"];

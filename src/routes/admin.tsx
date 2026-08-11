@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { EntityTable, useTableMutations } from "@/components/admin/entity-table";
 import { PageBackground } from "@/components/site-chrome";
+import { forumAccessCodesQuery } from "@/lib/forum-access";
 import {
   categoriesQuery,
   forumRepliesQuery,
