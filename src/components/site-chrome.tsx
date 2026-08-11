@@ -236,12 +236,10 @@ export function SiteFooter() {
           <Link to="/guides" className="text-primary hover:underline">
             Guides
           </Link>
-          <Link to="/payment-and-delivery" className="text-primary hover:underline">
-            Payment
+          <Link to="/cart" className="text-primary hover:underline">
+            Cart
           </Link>
-          <Link to="/order-tracking" className="text-primary hover:underline">
-            Track order
-          </Link>
+
           <Link to="/admin" className="text-primary hover:underline">
             Admin
           </Link>
