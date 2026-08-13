@@ -44,6 +44,48 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          admin_reply: string
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          ref_code: string
+          replied_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          admin_reply?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          ref_code?: string
+          replied_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_reply?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          ref_code?: string
+          replied_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_pages: {
         Row: {
           body: string
