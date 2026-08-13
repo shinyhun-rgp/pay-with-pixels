@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProductImage } from "@/components/product-image";
 import { PageWithSidebar, useSettings } from "@/components/site-chrome";
-import { categoriesQuery, priceRange, productsQuery } from "@/lib/store";
+import { Pin, Lock, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { categoriesQuery, forumThreadsQuery, priceRange, productsQuery } from "@/lib/store";
 
 type ShopSearch = { q?: string; category?: string };
 
@@ -70,5 +72,74 @@ function ShopPage() {
       </div>
 
     </PageWithSidebar>
+  );
+}
+
+/** Home board: latest posts published from the admin panel, forum-style rows. */
+function GuideBoard() {
+  const qc = useQueryClient();
+  const { data: threads, isLoading } = useQuery(forumThreadsQuery);
+  const [section, setSection] = useState("Latest posts");
+
+  const sections = ["Latest posts", ...Array.from(new Set((threads ?? []).map((t) => t.category)))];
+  const list = (threads ?? []).filter((t) => section === "Latest posts" || t.category === section);
+
+  return (
+    <section className="overflow-hidden rounded-lg border border-border bg-card/70">
+      <header className="flex items-center gap-4 overflow-x-auto border-b border-border px-4">
+        <nav className="flex flex-1 items-center gap-4 whitespace-nowrap">
+          {sections.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSection(s)}
+              className={`border-b-2 py-3 text-sm transition ${
+                s === section
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-foreground/60 hover:text-foreground"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </nav>
+        <button
+          aria-label="Refresh posts"
+          onClick={() => qc.invalidateQueries({ queryKey: ["forum_threads"] })}
+          className="text-muted-foreground hover:text-primary"
+        >
+          <RefreshCw className="h-4 w-4" />
+        </button>
+      </header>
+
+      {isLoading && <p className="px-4 py-6 text-sm text-muted-foreground">Loading posts…</p>}
+      {!isLoading && list.length === 0 && (
+        <p className="px-4 py-6 text-sm text-muted-foreground">No posts yet — publish one from the admin panel.</p>
+      )}
+
+      <ul className="divide-y divide-border">
+        {list.map((t) => (
+          <li key={t.id}>
+            <Link
+              to="/guides/$slug"
+              params={{ slug: t.slug }}
+              className="flex items-center gap-3 px-4 py-2.5 transition hover:bg-primary/5"
+            >
+              <Pin
+                className={`h-3.5 w-3.5 shrink-0 ${t.is_pinned ? "text-[color:var(--signal)]" : "text-muted-foreground/40"}`}
+              />
+              <span className="shrink-0 rounded bg-primary/15 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-primary">
+                {t.category}
+              </span>
+              {t.is_locked && <Lock className="h-3 w-3 shrink-0 text-muted-foreground" />}
+              <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{t.title}</span>
+              <span className="hidden shrink-0 font-mono text-xs text-muted-foreground sm:inline">
+                {t.is_pinned ? "Sticked" : `${t.views} views`}
+              </span>
+              <span className="hidden shrink-0 font-mono text-xs text-primary md:inline">@{t.author}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

@@ -40,7 +40,7 @@ export function SiteHeader() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(900px 320px at 15% -20%, oklch(0.82 0.14 200 / 0.22), transparent 70%), radial-gradient(700px 300px at 90% 0%, oklch(0.6 0.2 300 / 0.16), transparent 70%)",
+              "radial-gradient(900px 320px at 15% -20%, oklch(0.66 0.2 300 / 0.25), transparent 70%), radial-gradient(700px 300px at 90% 0%, oklch(0.7 0.18 330 / 0.14), transparent 70%)",
           }}
         />
         <div className="relative mx-auto max-w-7xl px-6 py-8 flex flex-col md:flex-row md:items-center gap-6">
@@ -258,7 +258,7 @@ export function PageBackground({ children }: { children: ReactNode }) {
         className="fixed inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(1000px 500px at 80% -10%, oklch(0.82 0.14 200 / 0.10), transparent 70%), radial-gradient(900px 500px at 0% 100%, oklch(0.6 0.2 300 / 0.10), transparent 70%)",
+            "radial-gradient(1000px 500px at 80% -10%, oklch(0.66 0.2 300 / 0.12), transparent 70%), radial-gradient(900px 500px at 0% 100%, oklch(0.7 0.18 330 / 0.10), transparent 70%)",
         }}
       />
       <SiteHeader />

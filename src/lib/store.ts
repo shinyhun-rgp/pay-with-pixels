@@ -204,7 +204,7 @@ export const slugify = (v: string) =>
 export function productGradient(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  const h1 = 185 + (hash % 90); // cyan → violet band only
+  const h1 = 265 + (hash % 60); // violet → magenta band only
   const h2 = (h1 + 30 + (hash % 40)) % 360;
   return `linear-gradient(135deg, hsl(${h1} 70% 22%), hsl(${h2} 65% 12%))`;
 }
