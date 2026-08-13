@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { EntityTable, useTableMutations } from "@/components/admin/entity-table";
 import { PageBackground } from "@/components/site-chrome";
-import { forumAccessCodesQuery } from "@/lib/forum-access";
+import { supabase } from "@/integrations/supabase/client";
 import {
   categoriesQuery,
-  forumRepliesQuery,
   forumThreadsQuery,
+  contactMessagesQuery,
+  slugify,
   contentPagesQuery,
   gramsLabel,
   money,
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Forum", "Orders"] as const;
+const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Contact", "Orders"] as const;
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
@@ -70,7 +71,8 @@ function AdminPage() {
           {tab === "Shipping" && <ShippingPanel />}
           {tab === "Settings" && <SettingsPanel />}
           {tab === "Pages" && <PagesPanel />}
-          {tab === "Forum" && <ForumPanel />}
+          {tab === "Guides" && <ForumPanel />}
+          {tab === "Contact" && <ContactPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
       </main>
@@ -389,20 +391,84 @@ function OrderDetails({ id }: { id: string }) {
   );
 }
 
+function QuickPost() {
+  const qc = useQueryClient();
+  const [form, setForm] = useState({ title: "", category: "Guides", author: "nullsector", body: "" });
+  const post = useMutation({
+    mutationFn: async () => {
+      const base = slugify(form.title) || "guide";
+      const { error } = await supabase.from("forum_threads").insert({
+        title: form.title.trim(),
+        slug: `${base}-${Math.random().toString(36).slice(2, 6)}`,
+        category: form.category.trim() || "Guides",
+        author: form.author.trim() || "nullsector",
+        body: form.body,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setForm({ title: "", category: form.category, author: form.author, body: "" });
+      qc.invalidateQueries({ queryKey: ["forum_threads"] });
+    },
+  });
+
+  const input = "rounded border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary";
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (form.title.trim()) post.mutate();
+      }}
+      className="rounded border border-border bg-card/70 p-5 space-y-3"
+    >
+      <h3 className="font-mono text-sm uppercase tracking-widest text-primary">/ new post</h3>
+      <div className="grid gap-3 md:grid-cols-3">
+        <input
+          required
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          placeholder="Title"
+          className={`md:col-span-2 ${input}`}
+        />
+        <input
+          value={form.category}
+          onChange={(e) => setForm({ ...form, category: e.target.value })}
+          placeholder="Section"
+          className={input}
+        />
+      </div>
+      <textarea
+        rows={8}
+        value={form.body}
+        onChange={(e) => setForm({ ...form, body: e.target.value })}
+        placeholder="Write the guide. Blank lines make paragraphs, **bold** for emphasis."
+        className={`w-full ${input}`}
+      />
+      <button
+        disabled={post.isPending}
+        className="rounded bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+      >
+        {post.isPending ? "Publishing…" : "Publish post"}
+      </button>
+    </form>
+  );
+}
+
 function ForumPanel() {
   const { data: threads } = useQuery(forumThreadsQuery);
-  const { data: replies } = useQuery(forumRepliesQuery);
   return (
     <>
+      <QuickPost />
       <EntityTable
-        title="Guide threads"
-        description="Post guides, pin the important ones and lock threads that should stop receiving replies."
+        title="Posts"
+        description="Everything published on the home board. Pin what matters, lock what is finished."
         table="forum_threads"
         rows={(threads ?? []) as unknown as Record<string, unknown>[]}
         columns={[
           { key: "title", label: "Title", width: "16rem" },
           { key: "slug", label: "Slug" },
-          { key: "category", label: "Category" },
+          { key: "category", label: "Section" },
           { key: "author", label: "Author" },
           { key: "body", label: "Body", type: "textarea", width: "24rem" },
           { key: "is_pinned", label: "Pinned", type: "boolean" },
@@ -419,43 +485,78 @@ function ForumPanel() {
           is_locked: false,
         }}
       />
-      <EntityTable
-        title="Replies"
-        description="Moderate community replies."
-        table="forum_replies"
-        rows={(replies ?? []) as unknown as Record<string, unknown>[]}
-        columns={[
-          { key: "author", label: "Author" },
-          { key: "body", label: "Body", type: "textarea", width: "28rem" },
-        ]}
-        queryKeys={[["forum_replies"]]}
-        newRowDefaults={{ thread_id: threads?.[0]?.id ?? null, author: "nullsector", body: "" }}
-      />
-      <AccessCodesTable />
     </>
   );
 }
 
-function AccessCodesTable() {
-  const { data: codes } = useQuery(forumAccessCodesQuery);
+function ContactPanel() {
+  const { data: messages } = useQuery(contactMessagesQuery);
+  const qc = useQueryClient();
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  const reply = useMutation({
+    mutationFn: async ({ id, text }: { id: string; text: string }) => {
+      const { error } = await supabase
+        .from("contact_messages")
+        .update({ admin_reply: text, status: "Replied", replied_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contact_messages"] }),
+  });
+
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contact_messages"] }),
+  });
+
   return (
-    <EntityTable
-      title="Forum access codes"
-      description="One-off $50 membership codes. Add a code after a buyer pays, then send it to them — it locks itself once redeemed."
-      table="forum_access_codes"
-      rows={(codes ?? []) as unknown as Record<string, unknown>[]}
-      columns={[
-        { key: "code", label: "Code", width: "14rem" },
-        { key: "label", label: "Note", width: "16rem" },
-        { key: "is_used", label: "Redeemed", type: "boolean" },
-      ]}
-      queryKeys={[["forum_access_codes"]]}
-      newRowDefaults={{
-        code: `NS-FORUM-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-        label: "",
-        is_used: false,
-      }}
-    />
+    <section className="space-y-4">
+      <header>
+        <h3 className="font-mono text-sm uppercase tracking-widest text-primary">/ contact inbox</h3>
+        <p className="text-xs text-muted-foreground">
+          Replies appear on the contact page as soon as you save them — the sender looks theirs up with the ticket code.
+        </p>
+      </header>
+      {(messages ?? []).length === 0 && <p className="text-sm text-muted-foreground">No messages yet.</p>}
+      {(messages ?? []).map((m) => (
+        <article key={m.id} className="rounded border border-border bg-card/70 p-5">
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
+            <span className="rounded bg-primary/15 px-2 py-0.5 text-primary">{m.ref_code}</span>
+            <span>{m.status}</span>
+            <span>{m.name || "anon"} · {m.email}</span>
+            <span>{new Date(m.created_at).toLocaleString()}</span>
+          </div>
+          <h4 className="mt-2 font-semibold text-foreground">{m.subject || "(no subject)"}</h4>
+          <p className="mt-1 whitespace-pre-wrap text-sm text-foreground/70">{m.message}</p>
+          <textarea
+            rows={3}
+            value={drafts[m.id] ?? m.admin_reply}
+            onChange={(e) => setDrafts({ ...drafts, [m.id]: e.target.value })}
+            placeholder="Write a reply…"
+            className="mt-3 w-full rounded border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+          <div className="mt-2 flex gap-2">
+            <button
+              onClick={() => reply.mutate({ id: m.id, text: drafts[m.id] ?? m.admin_reply })}
+              className="rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+            >
+              Save reply
+            </button>
+            <button
+              onClick={() => remove.mutate(m.id)}
+              className="rounded border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive"
+            >
+              Delete
+            </button>
+          </div>
+        </article>
+      ))}
+    </section>
   );
 }
+
 

@@ -204,7 +204,7 @@ export const slugify = (v: string) =>
 export function productGradient(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  const h1 = 185 + (hash % 90); // cyan → violet band only
+  const h1 = 265 + (hash % 60); // violet → magenta band only
   const h2 = (h1 + 30 + (hash % 40)) % 360;
   return `linear-gradient(135deg, hsl(${h1} 70% 22%), hsl(${h2} 65% 12%))`;
 }
@@ -265,6 +265,32 @@ export const forumRepliesQuery = queryOptions({
       .select(sel("*"))
       .order("created_at")
       .returns<ForumReply[]>();
+    if (error) throw error;
+    return data ?? [];
+  },
+});
+
+export type ContactMessage = {
+  id: string;
+  ref_code: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  admin_reply: string;
+  status: string;
+  replied_at: string | null;
+  created_at: string;
+};
+
+export const contactMessagesQuery = queryOptions({
+  queryKey: ["contact_messages"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select(sel("*"))
+      .order("created_at", { ascending: false })
+      .returns<ContactMessage[]>();
     if (error) throw error;
     return data ?? [];
   },
