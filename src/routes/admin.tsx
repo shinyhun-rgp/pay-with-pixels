@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { EntityTable, useTableMutations } from "@/components/admin/entity-table";
 import { PageBackground } from "@/components/site-chrome";
+import { supabase } from "@/integrations/supabase/client";
 import {
   categoriesQuery,
-  forumRepliesQuery,
   forumThreadsQuery,
   contactMessagesQuery,
+  slugify,
   contentPagesQuery,
   gramsLabel,
   money,
