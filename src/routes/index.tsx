@@ -45,26 +45,8 @@ function ShopPage() {
 
   return (
     <PageWithSidebar>
-      <section className="relative overflow-hidden rounded border border-border bg-card/60 p-6">
-        <div aria-hidden className="absolute inset-0 cyber-grid opacity-25" />
-        <div className="relative">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[color:var(--signal)]">
-            ./deploy --secure
-          </p>
-          <h1 className="mt-2 text-3xl md:text-4xl font-bold text-primary text-glow">
-            {activeCategory ? activeCategory.name : "Security software, licensed by the seat"}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm text-foreground/70">
-            {q ? `Results for “${q}”. ` : ""}
-            Signed builds, SBOM attached, 12 months of updates. Pick a seat tier on any product page and pay in crypto.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3 font-mono text-[11px] text-muted-foreground">
-            <span className="rounded border border-border px-2 py-1">Instant key delivery</span>
-            <span className="rounded border border-border px-2 py-1">Crypto-only</span>
-            <span className="rounded border border-border px-2 py-1">Reproducible builds</span>
-          </div>
-        </div>
-      </section>
+      <GuideBoard />
+
 
       {isLoading && <p className="mt-10 text-sm text-muted-foreground">Loading products…</p>}
 
