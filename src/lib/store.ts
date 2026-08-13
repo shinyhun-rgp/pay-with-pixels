@@ -269,3 +269,29 @@ export const forumRepliesQuery = queryOptions({
     return data ?? [];
   },
 });
+
+export type ContactMessage = {
+  id: string;
+  ref_code: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  admin_reply: string;
+  status: string;
+  replied_at: string | null;
+  created_at: string;
+};
+
+export const contactMessagesQuery = queryOptions({
+  queryKey: ["contact_messages"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select(sel("*"))
+      .order("created_at", { ascending: false })
+      .returns<ContactMessage[]>();
+    if (error) throw error;
+    return data ?? [];
+  },
+});

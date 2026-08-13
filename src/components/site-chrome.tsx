@@ -8,7 +8,7 @@ import { categoriesQuery, money, priceRange, productsQuery, settingsMap, setting
 
 const NAV = [
   { label: "STORE", to: "/" },
-  { label: "GUIDES", to: "/guides" },
+  { label: "CONTACT", to: "/contact" },
   { label: "CART", to: "/cart" },
 ] as const;
 
@@ -233,8 +233,8 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground">
         <p>{settings.footer_text ?? ""}</p>
         <div className="flex gap-4">
-          <Link to="/guides" className="text-primary hover:underline">
-            Guides
+          <Link to="/contact" className="text-primary hover:underline">
+            Contact
           </Link>
           <Link to="/cart" className="text-primary hover:underline">
             Cart

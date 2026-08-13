@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { EntityTable, useTableMutations } from "@/components/admin/entity-table";
 import { PageBackground } from "@/components/site-chrome";
-import { forumAccessCodesQuery } from "@/lib/forum-access";
 import {
   categoriesQuery,
   forumRepliesQuery,
   forumThreadsQuery,
+  contactMessagesQuery,
   contentPagesQuery,
   gramsLabel,
   money,
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Forum", "Orders"] as const;
+const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Contact", "Orders"] as const;
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
@@ -70,7 +70,8 @@ function AdminPage() {
           {tab === "Shipping" && <ShippingPanel />}
           {tab === "Settings" && <SettingsPanel />}
           {tab === "Pages" && <PagesPanel />}
-          {tab === "Forum" && <ForumPanel />}
+          {tab === "Guides" && <ForumPanel />}
+          {tab === "Contact" && <ContactPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
       </main>
@@ -395,7 +396,7 @@ function ForumPanel() {
   return (
     <>
       <EntityTable
-        title="Guide threads"
+        title="Guides"
         description="Post guides, pin the important ones and lock threads that should stop receiving replies."
         table="forum_threads"
         rows={(threads ?? []) as unknown as Record<string, unknown>[]}
@@ -431,31 +432,7 @@ function ForumPanel() {
         queryKeys={[["forum_replies"]]}
         newRowDefaults={{ thread_id: threads?.[0]?.id ?? null, author: "nullsector", body: "" }}
       />
-      <AccessCodesTable />
     </>
-  );
-}
-
-function AccessCodesTable() {
-  const { data: codes } = useQuery(forumAccessCodesQuery);
-  return (
-    <EntityTable
-      title="Forum access codes"
-      description="One-off $50 membership codes. Add a code after a buyer pays, then send it to them — it locks itself once redeemed."
-      table="forum_access_codes"
-      rows={(codes ?? []) as unknown as Record<string, unknown>[]}
-      columns={[
-        { key: "code", label: "Code", width: "14rem" },
-        { key: "label", label: "Note", width: "16rem" },
-        { key: "is_used", label: "Redeemed", type: "boolean" },
-      ]}
-      queryKeys={[["forum_access_codes"]]}
-      newRowDefaults={{
-        code: `NS-FORUM-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-        label: "",
-        is_used: false,
-      }}
-    />
   );
 }
 
