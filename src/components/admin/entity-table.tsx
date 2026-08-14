@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export type FieldType = "text" | "number" | "textarea" | "boolean" | "select";
+export type FieldType = "text" | "number" | "textarea" | "boolean" | "select" | "image";
 
 export type ColumnDef = {
   key: string;
@@ -194,6 +194,10 @@ function CellInput({
     );
   }
 
+  if (column.type === "image") {
+    return <ImageCell value={value} onCommit={onCommit} label={column.label} />;
+  }
+
   if (column.type === "select") {
     return (
       <select
@@ -228,4 +232,66 @@ function CellInput({
 
   if (column.type === "textarea") return <textarea rows={3} {...common} />;
   return <input type={column.type === "number" ? "number" : "text"} step="any" {...common} />;
+}
+
+function ImageCell({
+  value,
+  onCommit,
+  label,
+}: {
+  value: unknown;
+  onCommit: (value: unknown) => void;
+  label: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const url = typeof value === "string" && value ? value : null;
+
+  const upload = async (file: File) => {
+    setBusy(true);
+    setErr(null);
+    try {
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("product-images").upload(path, file, {
+        cacheControl: "31536000",
+        upsert: false,
+      });
+      if (error) throw error;
+      const { data, error: signErr } = await supabase.storage
+        .from("product-images")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (signErr) throw signErr;
+      onCommit(data.signedUrl);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="min-w-40 space-y-1">
+      {url && <img src={url} alt="" className="h-12 w-12 rounded object-cover border border-border" />}
+      <input
+        type="file"
+        accept="image/*"
+        aria-label={label}
+        disabled={busy}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void upload(file);
+          e.target.value = "";
+        }}
+        className="block w-full text-[11px]"
+      />
+      {busy && <p className="text-[11px] text-muted-foreground">Uploading…</p>}
+      {err && <p className="text-[11px] text-destructive">{err}</p>}
+      {url && (
+        <button type="button" onClick={() => onCommit(null)} className="text-[11px] text-muted-foreground hover:text-destructive">
+          Remove image
+        </button>
+      )}
+    </div>
+  );
 }
