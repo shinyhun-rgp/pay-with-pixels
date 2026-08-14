@@ -106,7 +106,7 @@ function ProductsPanel() {
           { key: "slug", label: "Slug" },
           { key: "description", label: "Description", type: "textarea", width: "22rem" },
           { key: "category_id", label: "Category", type: "select", options: categoryOptions },
-          { key: "image_url", label: "Image URL" },
+          { key: "image_url", label: "Image", type: "image" },
           { key: "is_active", label: "Active", type: "boolean" },
           { key: "sort_order", label: "Order", type: "number", width: "5rem" },
         ]}
