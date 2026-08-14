@@ -26,7 +26,7 @@ export const Route = createFileRoute("/contact")({
 const field = "w-full rounded border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary";
 
 function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [form, setForm] = useState({ subject: "", message: "" });
   const [ref, setRef] = useState<string | null>(null);
   const [lookup, setLookup] = useState("");
   const [ticket, setTicket] = useState<string | null>(null);
@@ -36,8 +36,6 @@ function ContactPage() {
       const { data, error } = await supabase
         .from("contact_messages")
         .insert({
-          name: form.name.trim(),
-          email: form.email.trim(),
           subject: form.subject.trim(),
           message: form.message.trim(),
         })
@@ -49,7 +47,7 @@ function ContactPage() {
     onSuccess: (code) => {
       setRef(code);
       setTicket(code);
-      setForm({ name: "", email: "", subject: "", message: "" });
+      setForm({ subject: "", message: "" });
     },
   });
 
@@ -68,23 +66,8 @@ function ContactPage() {
           }}
           className="mt-6 space-y-3 rounded border border-border bg-card/70 p-5"
         >
-          <div className="grid gap-3 md:grid-cols-2">
-            <input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Name or handle"
-              className={field}
-            />
-            <input
-              required
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="Email"
-              className={field}
-            />
-          </div>
           <input
+            required
             value={form.subject}
             onChange={(e) => setForm({ ...form, subject: e.target.value })}
             placeholder="Subject"
@@ -95,7 +78,7 @@ function ContactPage() {
             rows={6}
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
-            placeholder="How can we help?"
+            placeholder="Message"
             className={field}
           />
           <button
@@ -110,6 +93,7 @@ function ContactPage() {
             </p>
           )}
         </form>
+
 
         <section className="mt-10">
           <h2 className="font-mono text-sm uppercase tracking-[0.25em] text-muted-foreground">/ check a reply</h2>
