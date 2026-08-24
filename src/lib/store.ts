@@ -169,21 +169,11 @@ export function money(value: number, symbol = "$"): string {
   return `${symbol}${Number(value || 0).toFixed(2)}`;
 }
 
-/** License tier label. The stored numeric tier is the number of seats/devices. */
-export function gramsLabel(seats: number): string {
-  const n = Number(seats) || 0;
-  if (n >= 1000) return "Unlimited site licence";
-  return n === 1 ? "1 seat" : `${n} seats`;
+/** Single per-item price, formatted. */
+export function productPrice(product: Product, symbol = "$"): string {
+  return money(Number(product.price) || 0, symbol);
 }
 
-
-export function priceRange(product: Product, symbol = "$"): string {
-  const prices = product.product_prices.map((p) => Number(p.price));
-  if (prices.length === 0) return "—";
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-  return min === max ? money(min, symbol) : `${money(min, symbol)} – ${money(max, symbol)}`;
-}
 
 export const slugify = (v: string) =>
   v
