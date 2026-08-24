@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Check } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ProductImage } from "@/components/product-image";
 import { PageWithSidebar, useSettings } from "@/components/site-chrome";
 import { useCart } from "@/lib/cart";
-import { categoriesQuery, gramsLabel, money, priceRange, productsQuery } from "@/lib/store";
+import { categoriesQuery, money, productPrice, productsQuery } from "@/lib/store";
 
 export const Route = createFileRoute("/product/$slug")({
   head: ({ params }) => {
@@ -34,13 +34,11 @@ function ProductPage() {
   const { data: categories } = useQuery(categoriesQuery);
 
   const product = (products ?? []).find((p) => p.slug === slug);
-  const tiers = useMemo(() => product?.product_prices ?? [], [product]);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const tier = tiers.find((t) => t.id === selectedId) ?? tiers[0];
+  const unitPrice = Number(product?.price) || 0;
   const category = (categories ?? []).find((c) => c.id === product?.category_id);
   const related = (products ?? [])
     .filter((p) => p.category_id === product?.category_id && p.id !== product?.id)
@@ -66,13 +64,12 @@ function ProductPage() {
   }
 
   const addToCart = () => {
-    if (!tier) return;
     cart.add({
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      grams: Number(tier.grams),
-      price: Number(tier.price),
+      grams: 1,
+      price: unitPrice,
       quantity,
     });
     setAdded(true);
@@ -109,28 +106,8 @@ function ProductPage() {
 
         <div>
           <h2 className="text-2xl font-bold text-primary">{product.name}</h2>
-          <p className="mt-1 text-lg text-foreground/70">{priceRange(product, symbol)}</p>
+          <p className="mt-1 text-lg text-foreground/70">{productPrice(product, symbol)}</p>
           <p className="mt-4 text-sm text-foreground/75">{product.description}</p>
-
-          <div className="mt-6">
-            <span className="text-sm font-semibold">Licence tier</span>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tiers.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setSelectedId(t.id)}
-                  className={`px-3 py-1.5 rounded border text-sm transition ${
-                    t.id === tier?.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border bg-card hover:border-primary"
-                  }`}
-                >
-                  {gramsLabel(Number(t.grams))} — {money(Number(t.price), symbol)}
-                </button>
-              ))}
-              {tiers.length === 0 && <p className="text-sm text-muted-foreground">No licence tiers configured yet.</p>}
-            </div>
-          </div>
 
           <div className="mt-6 flex items-center gap-3">
             <label htmlFor="qty" className="text-sm font-semibold">
@@ -148,13 +125,12 @@ function ProductPage() {
           </div>
 
           <p className="mt-6 text-lg font-semibold">
-            Total: {money((Number(tier?.price) || 0) * quantity, symbol)}
+            Total: {money(unitPrice * quantity, symbol)}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-3">
             <button
               onClick={addToCart}
-              disabled={!tier}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded px-5 py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
             >
               {added ? <Check className="h-4 w-4" /> : null}
@@ -165,7 +141,6 @@ function ProductPage() {
                 addToCart();
                 navigate({ to: "/checkout" });
               }}
-              disabled={!tier}
               className="rounded border border-primary px-5 py-2.5 text-sm text-primary hover:bg-primary hover:text-primary-foreground transition disabled:opacity-50"
             >
               Buy now
@@ -187,7 +162,7 @@ function ProductPage() {
               >
                 <ProductImage imageUrl={c.image_url} name={c.name} className="aspect-[4/3] rounded mb-3" />
                 <div className="text-primary font-semibold text-sm leading-tight">{c.name}</div>
-                <div className="text-xs text-muted-foreground mt-1">{priceRange(c, symbol)}</div>
+                <div className="text-xs text-muted-foreground mt-1">{productPrice(c, symbol)}</div>
               </Link>
             ))}
           </div>
