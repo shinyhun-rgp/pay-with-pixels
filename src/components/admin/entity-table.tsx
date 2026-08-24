@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export type FieldType = "text" | "number" | "textarea" | "boolean" | "select" | "image";
+export type FieldType = "text" | "number" | "textarea" | "boolean" | "select" | "image" | "date";
 
 export type ColumnDef = {
   key: string;
@@ -190,6 +190,20 @@ function CellInput({
         checked={Boolean(value)}
         onChange={(e) => onCommit(e.target.checked)}
         aria-label={column.label}
+      />
+    );
+  }
+
+  if (column.type === "date") {
+    const iso = typeof value === "string" && value ? value : "";
+    const local = iso ? new Date(iso).toISOString().slice(0, 16) : "";
+    return (
+      <input
+        type="datetime-local"
+        value={local}
+        aria-label={column.label}
+        onChange={(e) => onCommit(e.target.value ? new Date(e.target.value).toISOString() : null)}
+        className="w-full min-w-44 px-2 py-1 border border-border rounded bg-background"
       />
     );
   }
