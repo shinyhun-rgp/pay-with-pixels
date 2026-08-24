@@ -85,15 +85,13 @@ export const productsQuery = queryOptions({
   queryFn: async () => {
     const { data, error } = await supabase
       .from("products")
-      .select(sel("*, product_prices(*)"))
+      .select(sel("*"))
       .order("sort_order")
       .returns<Product[]>();
     if (error) throw error;
-    return (data ?? []).map((p) => ({
-      ...p,
-      product_prices: [...(p.product_prices ?? [])].sort((a, b) => a.grams - b.grams),
-    }));
+    return data ?? [];
   },
+
 });
 
 export const paymentMethodsQuery = queryOptions({
