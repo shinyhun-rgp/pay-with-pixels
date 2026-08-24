@@ -10,14 +10,6 @@ export type Category = {
   is_active: boolean;
 };
 
-export type ProductPrice = {
-  id: string;
-  product_id: string;
-  grams: number;
-  price: number;
-  sort_order: number;
-};
-
 export type Product = {
   id: string;
   name: string;
@@ -27,8 +19,9 @@ export type Product = {
   category_id: string | null;
   is_active: boolean;
   sort_order: number;
-  product_prices: ProductPrice[];
+  price: number;
 };
+
 
 export type PaymentMethod = {
   id: string;
