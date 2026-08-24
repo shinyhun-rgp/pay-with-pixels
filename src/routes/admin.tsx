@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { AdminGate } from "@/components/admin/admin-gate";
 import { EntityTable, useTableMutations } from "@/components/admin/entity-table";
 import { PageBackground } from "@/components/site-chrome";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,6 @@ import {
   contactMessagesQuery,
   slugify,
   contentPagesQuery,
-  gramsLabel,
   money,
   ordersQuery,
   paymentMethodsQuery,
@@ -36,16 +36,31 @@ const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pag
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
+  return (
+    <PageBackground>
+      <AdminGate>
+        <AdminDashboard />
+      </AdminGate>
+    </PageBackground>
+  );
+}
+
+function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("Products");
 
   return (
-    <PageBackground>
       <main className="mx-auto max-w-6xl px-6 py-10">
         <header>
           <h2 className="text-3xl font-bold text-primary">Store admin</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Signed in automatically — every field below writes straight to the live store.
+            Owner account — every field below writes straight to the live store.
           </p>
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="mt-2 text-xs text-muted-foreground hover:text-destructive"
+          >
+            Sign out
+          </button>
         </header>
 
         <nav className="mt-6 flex flex-wrap gap-2">
@@ -76,7 +91,6 @@ function AdminPage() {
           {tab === "Orders" && <OrdersPanel />}
         </div>
       </main>
-    </PageBackground>
   );
 }
 
@@ -87,14 +101,16 @@ function ProductsPanel() {
 
   return (
     <>
+      <QuickProduct nextOrder={(products?.length ?? 0) + 1} />
       <EntityTable
         title="Products"
-        description="Name, description and category. Licence seat tiers are managed below each product."
+        description="One price per product. Edit any cell and it saves as soon as you leave the field."
         table="products"
         rows={(products ?? []).map((p) => ({
           id: p.id,
           name: p.name,
           slug: p.slug,
+          price: p.price,
           description: p.description,
           category_id: p.category_id,
           image_url: p.image_url,
@@ -103,6 +119,7 @@ function ProductsPanel() {
         }))}
         columns={[
           { key: "name", label: "Name" },
+          { key: "price", label: "Price", type: "number", width: "7rem" },
           { key: "slug", label: "Slug" },
           { key: "description", label: "Description", type: "textarea", width: "22rem" },
           { key: "category_id", label: "Category", type: "select", options: categoryOptions },
@@ -111,50 +128,99 @@ function ProductsPanel() {
           { key: "sort_order", label: "Order", type: "number", width: "5rem" },
         ]}
         queryKeys={[["products"]]}
-        newRowDefaults={{
-          name: "",
-          slug: "",
-          description: "",
-          category_id: null,
-          image_url: null,
-          is_active: true,
-          sort_order: (products?.length ?? 0) + 1,
-        }}
+        allowCreate={false}
       />
-
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-primary">Licence pricing</h3>
-        {(products ?? []).map((p) => (
-          <PricesTable key={p.id} productId={p.id} name={p.name} prices={p.product_prices} />
-        ))}
-      </div>
     </>
   );
 }
 
-function PricesTable({
-  productId,
-  name,
-  prices,
-}: {
-  productId: string;
-  name: string;
-  prices: { id: string; grams: number; price: number; sort_order: number }[];
-}) {
+/** One-line product creation: name + price is enough, the slug is generated. */
+function QuickProduct({ nextOrder }: { nextOrder: number }) {
+  const qc = useQueryClient();
+  const { data: categories } = useQuery(categoriesQuery);
+  const [form, setForm] = useState({ name: "", price: "", category_id: "", description: "" });
+  const [error, setError] = useState<string | null>(null);
+
+  const create = useMutation({
+    mutationFn: async () => {
+      const base = slugify(form.name) || "product";
+      const { error: err } = await supabase.from("products").insert({
+        name: form.name.trim(),
+        slug: `${base}-${Math.random().toString(36).slice(2, 5)}`,
+        price: Number(form.price) || 0,
+        description: form.description,
+        category_id: form.category_id || null,
+        is_active: true,
+        sort_order: nextOrder,
+      });
+      if (err) throw err;
+    },
+    onSuccess: () => {
+      setForm({ name: "", price: "", category_id: form.category_id, description: "" });
+      setError(null);
+      qc.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (e) => setError(e instanceof Error ? e.message : "Could not add product"),
+  });
+
+  const input = "rounded border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary";
+
   return (
-    <EntityTable
-      title={name}
-      description={`${prices.length} licence tiers — seat count and the price charged for that tier.`}
-      table="product_prices"
-      rows={prices.map((pr) => ({ id: pr.id, grams: pr.grams, price: pr.price, sort_order: pr.sort_order }))}
-      columns={[
-        { key: "grams", label: "Seats", type: "number", width: "7rem" },
-        { key: "price", label: "Price", type: "number", width: "7rem" },
-        { key: "sort_order", label: "Order", type: "number", width: "5rem" },
-      ]}
-      queryKeys={[["products"]]}
-      newRowDefaults={{ product_id: productId, grams: 0, price: 0, sort_order: prices.length + 1 }}
-    />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (form.name.trim()) create.mutate();
+      }}
+      className="rounded border border-border bg-card/70 p-5 space-y-3"
+    >
+      <h3 className="font-mono text-sm uppercase tracking-widest text-primary">/ add product</h3>
+      <div className="grid gap-3 md:grid-cols-4">
+        <input
+          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          placeholder="Product name"
+          className={`md:col-span-2 ${input}`}
+        />
+        <input
+          type="number"
+          step="any"
+          min="0"
+          value={form.price}
+          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          placeholder="Price"
+          className={input}
+        />
+        <select
+          value={form.category_id}
+          onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+          aria-label="Category"
+          className={input}
+        >
+          <option value="">No category</option>
+          {(categories ?? []).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <textarea
+        rows={2}
+        value={form.description}
+        onChange={(e) => setForm({ ...form, description: e.target.value })}
+        placeholder="Short description (optional)"
+        className={`w-full ${input}`}
+      />
+      {error && <p className="text-xs text-destructive">{error}</p>}
+      <button
+        disabled={create.isPending}
+        className="rounded bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+      >
+        {create.isPending ? "Adding…" : "Add product"}
+      </button>
+      <p className="text-xs text-muted-foreground">Upload the image in the table below once the product exists.</p>
+    </form>
   );
 }
 
@@ -379,7 +445,7 @@ function OrderDetails({ id }: { id: string }) {
       <ul className="list-disc pl-5">
         {(items ?? []).map((i) => (
           <li key={i.id}>
-            {i.product_name} — {gramsLabel(i.grams)} × {i.quantity} — {money(Number(i.unit_price) * i.quantity)}
+            {i.product_name} × {i.quantity} — {money(Number(i.unit_price) * i.quantity)}
           </li>
         ))}
       </ul>
@@ -471,6 +537,8 @@ function ForumPanel() {
           { key: "category", label: "Section" },
           { key: "author", label: "Author" },
           { key: "body", label: "Body", type: "textarea", width: "24rem" },
+          { key: "created_at", label: "Date", type: "date", width: "13rem" },
+          { key: "views", label: "Views", type: "number", width: "6rem" },
           { key: "is_pinned", label: "Pinned", type: "boolean" },
           { key: "is_locked", label: "Locked", type: "boolean" },
         ]}
@@ -481,6 +549,7 @@ function ForumPanel() {
           category: "Guides",
           author: "nullsector",
           body: "",
+          views: 0,
           is_pinned: false,
           is_locked: false,
         }}

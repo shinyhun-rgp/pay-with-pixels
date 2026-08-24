@@ -4,7 +4,7 @@ import { ProductImage } from "@/components/product-image";
 import { PageWithSidebar, useSettings } from "@/components/site-chrome";
 import { Pin, Lock, RefreshCw } from "lucide-react";
 import { useState } from "react";
-import { categoriesQuery, forumThreadsQuery, priceRange, productsQuery } from "@/lib/store";
+import { categoriesQuery, forumThreadsQuery, productPrice, productsQuery } from "@/lib/store";
 
 type ShopSearch = { q?: string; category?: string };
 
@@ -66,7 +66,7 @@ function ShopPage() {
           >
             <ProductImage imageUrl={p.image_url} name={p.name} className="aspect-[4/3] rounded mb-3" />
             <h3 className="text-sm font-semibold leading-tight text-foreground group-hover:text-primary">{p.name}</h3>
-            <p className="mt-1 font-mono text-xs text-primary">{priceRange(p, symbol)}</p>
+            <p className="mt-1 font-mono text-xs text-primary">{productPrice(p, symbol)}</p>
           </Link>
         ))}
       </div>
