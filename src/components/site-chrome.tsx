@@ -4,7 +4,7 @@ import { Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react"
 import { useState, type ReactNode } from "react";
 import { ProductImage } from "@/components/product-image";
 import { useCart } from "@/lib/cart";
-import { categoriesQuery, money, priceRange, productsQuery, settingsMap, settingsQuery } from "@/lib/store";
+import { categoriesQuery, money, productPrice, productsQuery, settingsMap, settingsQuery } from "@/lib/store";
 
 const NAV = [
   { label: "STORE", to: "/" },
@@ -215,7 +215,7 @@ export function ShopSidebar() {
                     <span className="block text-primary font-semibold text-[13px] leading-tight group-hover:underline">
                       {p.name}
                     </span>
-                    <span className="block text-xs text-muted-foreground mt-0.5 font-mono">{priceRange(p, symbol)}</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5 font-mono">{productPrice(p, symbol)}</span>
                   </span>
                 </Link>
               </li>

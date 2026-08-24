@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { PageWithSidebar, useSettings } from "@/components/site-chrome";
 import { useCart, type PlacedOrder } from "@/lib/cart";
-import { gramsLabel, money, paymentMethodsQuery } from "@/lib/store";
+import { money, paymentMethodsQuery } from "@/lib/store";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -106,7 +106,7 @@ function CheckoutPage() {
           {cart.items.map((i) => (
             <tr key={`${i.productId}-${i.grams}`} className="border-b border-border">
               <td className="px-3 py-2">
-                {i.name} ({gramsLabel(i.grams)}) <span className="text-muted-foreground">× {i.quantity}</span>
+                {i.name} <span className="text-muted-foreground">× {i.quantity}</span>
               </td>
               <td className="px-3 py-2 text-right text-primary">{money(i.price * i.quantity, symbol)}</td>
             </tr>
