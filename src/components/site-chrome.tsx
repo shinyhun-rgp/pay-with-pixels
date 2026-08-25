@@ -4,6 +4,7 @@ import { Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react"
 import { useState, type ReactNode } from "react";
 import { ProductImage } from "@/components/product-image";
 import { useCart } from "@/lib/cart";
+import { useIsAdmin, useSession } from "@/lib/admin-auth";
 import { categoriesQuery, money, productPrice, productsQuery, settingsMap, settingsQuery } from "@/lib/store";
 
 const NAV = [
@@ -240,9 +241,7 @@ export function SiteFooter() {
             Cart
           </Link>
 
-          <Link to="/admin" className="text-primary hover:underline">
-            Admin
-          </Link>
+          <AdminLink />
         </div>
       </div>
     </footer>
@@ -329,5 +328,17 @@ function renderInline(line: string): ReactNode[] {
     ) : (
       <span key={i}>{part}</span>
     ),
+  );
+}
+
+/** Footer admin link, visible only to the signed-in owner account. */
+function AdminLink() {
+  const { session } = useSession();
+  const { data: isAdmin } = useIsAdmin(session?.user.id);
+  if (!session || !isAdmin) return null;
+  return (
+    <Link to="/admin" className="text-primary hover:underline">
+      Admin
+    </Link>
   );
 }
