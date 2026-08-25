@@ -205,6 +205,45 @@ export type Database = {
         }
         Relationships: []
       }
+      invites: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_revoked: boolean
+          max_uses: number
+          note: string
+          updated_at: string
+          uses: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_revoked?: boolean
+          max_uses?: number
+          note?: string
+          updated_at?: string
+          uses?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_revoked?: boolean
+          max_uses?: number
+          note?: string
+          updated_at?: string
+          uses?: number
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           grams: number
@@ -436,6 +475,35 @@ export type Database = {
         }
         Relationships: []
       }
+      site_members: {
+        Row: {
+          invite_id: string | null
+          invited_by: string | null
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          invite_id?: string | null
+          invited_by?: string | null
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          invite_id?: string | null
+          invited_by?: string | null
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_members_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "invites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           key: string
@@ -483,7 +551,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      am_i_member: { Args: never; Returns: boolean }
       claim_admin: { Args: never; Returns: boolean }
+      create_invite: {
+        Args: { _days_valid?: number; _max_uses?: number; _note?: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -492,7 +565,9 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_member: { Args: { _user_id: string }; Returns: boolean }
       redeem_invite: { Args: { _code: string }; Returns: boolean }
+      redeem_invite_code: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
