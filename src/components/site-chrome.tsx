@@ -330,3 +330,15 @@ function renderInline(line: string): ReactNode[] {
     ),
   );
 }
+
+/** Footer admin link, visible only to the signed-in owner account. */
+function AdminLink() {
+  const { session } = useSession();
+  const { data: isAdmin } = useIsAdmin(session?.user.id);
+  if (!session || !isAdmin) return null;
+  return (
+    <Link to="/admin" className="text-primary hover:underline">
+      Admin
+    </Link>
+  );
+}
