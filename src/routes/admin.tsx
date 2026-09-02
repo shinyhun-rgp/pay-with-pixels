@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   categoriesQuery,
   forumThreadsQuery,
+  forumAccessCodesQuery,
   contactMessagesQuery,
   slugify,
   contentPagesQuery,
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Contact", "Orders"] as const;
+const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Forum access", "Contact", "Orders"] as const;
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
@@ -87,6 +88,7 @@ function AdminDashboard() {
           {tab === "Settings" && <SettingsPanel />}
           {tab === "Pages" && <PagesPanel />}
           {tab === "Guides" && <ForumPanel />}
+          {tab === "Forum access" && <ForumAccessPanel />}
           {tab === "Contact" && <ContactPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
@@ -555,6 +557,25 @@ function ForumPanel() {
         }}
       />
     </>
+  );
+}
+
+function ForumAccessPanel() {
+  const { data: codes } = useQuery(forumAccessCodesQuery);
+  return (
+    <EntityTable
+      title="Forum access codes"
+      description="Create a code for each paid $50 entry, then send it to the buyer. A code stops working once it is redeemed."
+      table="forum_access_codes"
+      rows={(codes ?? []) as unknown as Record<string, unknown>[]}
+      columns={[
+        { key: "code", label: "Code", width: "14rem" },
+        { key: "label", label: "Note / buyer", width: "18rem" },
+        { key: "is_used", label: "Used", type: "boolean" },
+      ]}
+      queryKeys={[["forum_access_codes"]]}
+      newRowDefaults={{ code: "", label: "", is_used: false }}
+    />
   );
 }
 

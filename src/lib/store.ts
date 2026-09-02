@@ -276,3 +276,25 @@ export const contactMessagesQuery = queryOptions({
     return data ?? [];
   },
 });
+
+export type ForumAccessCode = {
+  id: string;
+  code: string;
+  label: string;
+  is_used: boolean;
+  used_at: string | null;
+  created_at: string;
+};
+
+export const forumAccessCodesQuery = queryOptions({
+  queryKey: ["forum_access_codes"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("forum_access_codes")
+      .select(sel("*"))
+      .order("created_at", { ascending: false })
+      .returns<ForumAccessCode[]>();
+    if (error) throw error;
+    return data ?? [];
+  },
+});
