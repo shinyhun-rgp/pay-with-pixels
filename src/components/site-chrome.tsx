@@ -9,6 +9,7 @@ import { categoriesQuery, money, productPrice, productsQuery, settingsMap, setti
 
 const NAV = [
   { label: "STORE", to: "/" },
+  { label: "FORUM", to: "/forum" },
   { label: "CONTACT", to: "/contact" },
   { label: "CART", to: "/cart" },
 ] as const;
@@ -236,6 +237,9 @@ export function SiteFooter() {
         <div className="flex gap-4">
           <Link to="/contact" className="text-primary hover:underline">
             Contact
+          </Link>
+          <Link to="/forum" className="text-primary hover:underline">
+            Forum
           </Link>
           <Link to="/cart" className="text-primary hover:underline">
             Cart

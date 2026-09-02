@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Lock, Pin } from "lucide-react";
+import { ForumGate } from "@/components/forum-gate";
 import { PageBackground, RichText } from "@/components/site-chrome";
 import { forumThreadsQuery } from "@/lib/store";
 
@@ -18,19 +19,30 @@ export const Route = createFileRoute("/guides/$slug")({
       ],
     };
   },
+  ssr: false,
   component: ThreadPage,
 });
 
 function ThreadPage() {
+  return (
+    <PageBackground>
+      <ForumGate>
+        <ThreadBody />
+      </ForumGate>
+    </PageBackground>
+  );
+}
+
+function ThreadBody() {
   const { slug } = Route.useParams();
   const { data: threads, isLoading } = useQuery(forumThreadsQuery);
   const thread = (threads ?? []).find((t) => t.slug === slug);
 
   return (
-    <PageBackground>
+    <>
       <main className="mx-auto max-w-3xl px-6 py-10">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-          <ArrowLeft className="h-4 w-4" /> Back to posts
+        <Link to="/forum" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+          <ArrowLeft className="h-4 w-4" /> Back to forum
         </Link>
 
         {isLoading && <p className="mt-8 text-sm text-muted-foreground">Loading post…</p>}
@@ -54,6 +66,6 @@ function ThreadPage() {
           </article>
         )}
       </main>
-    </PageBackground>
+    </>
   );
 }
