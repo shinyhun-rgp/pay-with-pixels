@@ -96,5 +96,5 @@
 }
 
 @utility text-glow {
-  text-shadow: 0 0 18px oklch(0.66 0.2 300 / 0.55);
+  text-shadow: 0 0 18px oklch(1 0 0 / 0.35);
 }
