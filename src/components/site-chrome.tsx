@@ -151,6 +151,9 @@ export function SiteHeader() {
               </Link>
             </li>
           ))}
+          <li>
+            <SessionControl />
+          </li>
         </ul>
       </nav>
     </header>
