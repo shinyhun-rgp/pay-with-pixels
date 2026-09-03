@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { LogOut, Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useState, type ReactNode } from "react";
 import { ProductImage } from "@/components/product-image";
 import { useCart } from "@/lib/cart";
