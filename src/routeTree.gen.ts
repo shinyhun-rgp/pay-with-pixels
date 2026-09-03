@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -24,6 +25,11 @@ import { Route as ApiPublicResolveImageRouteImport } from './routes/api/public/r
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvitesRoute = InvitesRouteImport.update({
+  id: '/invites',
+  path: '/invites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForumRoute = ForumRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forum': typeof ForumRoute
+  '/invites': typeof InvitesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forum': typeof ForumRoute
+  '/invites': typeof InvitesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forum': typeof ForumRoute
+  '/invites': typeof InvitesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/forum'
+    | '/invites'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/forum'
+    | '/invites'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/forum'
+    | '/invites'
     | '/sitemap.xml'
     | '/guides/$slug'
     | '/product/$slug'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   ForumRoute: typeof ForumRoute
+  InvitesRoute: typeof InvitesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   ProductSlugRoute: typeof ProductSlugRoute
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invites': {
+      id: '/invites'
+      path: '/invites'
+      fullPath: '/invites'
+      preLoaderRoute: typeof InvitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forum': {
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   ForumRoute: ForumRoute,
+  InvitesRoute: InvitesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   ProductSlugRoute: ProductSlugRoute,
