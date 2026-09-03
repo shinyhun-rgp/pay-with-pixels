@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { LogOut, Mail, Search, ShieldCheck, ShoppingCart, Terminal } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useState, type ReactNode } from "react";
 import { ProductImage } from "@/components/product-image";
 import { useCart } from "@/lib/cart";
@@ -10,9 +11,31 @@ import { categoriesQuery, money, productPrice, productsQuery, settingsMap, setti
 const NAV = [
   { label: "STORE", to: "/" },
   { label: "FORUM", to: "/forum" },
+  { label: "INVITES", to: "/invites" },
   { label: "CONTACT", to: "/contact" },
   { label: "CART", to: "/cart" },
 ] as const;
+
+/** Sign-out control, shown only when a member is signed in. */
+function SessionControl() {
+  const { session } = useSession();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  if (!session) return null;
+  return (
+    <button
+      onClick={async () => {
+        await qc.cancelQueries();
+        qc.clear();
+        await supabase.auth.signOut();
+        navigate({ to: "/auth", replace: true });
+      }}
+      className="inline-flex items-center gap-1 text-[11px] font-mono tracking-widest text-foreground/60 hover:text-primary"
+    >
+      <LogOut className="h-3 w-3" /> SIGN OUT
+    </button>
+  );
+}
 
 
 export function useSettings() {
@@ -128,6 +151,9 @@ export function SiteHeader() {
               </Link>
             </li>
           ))}
+          <li>
+            <SessionControl />
+          </li>
         </ul>
       </nav>
     </header>

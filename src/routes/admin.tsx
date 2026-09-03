@@ -33,7 +33,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Forum access", "Contact", "Orders"] as const;
+const TABS = ["Products", "Categories", "Payments", "Shipping", "Settings", "Pages", "Guides", "Forum access", "Invites", "Contact", "Orders"] as const;
 type Tab = (typeof TABS)[number];
 
 function AdminPage() {
@@ -89,6 +89,7 @@ function AdminDashboard() {
           {tab === "Pages" && <PagesPanel />}
           {tab === "Guides" && <ForumPanel />}
           {tab === "Forum access" && <ForumAccessPanel />}
+          {tab === "Invites" && <InvitesPanel />}
           {tab === "Contact" && <ContactPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
@@ -650,3 +651,37 @@ function ContactPanel() {
 }
 
 
+
+/** Owner view of every invite code minted on the network. */
+function InvitesPanel() {
+  const { data: invites } = useQuery({
+    queryKey: ["all_invites"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("invites")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  return (
+    <EntityTable
+      title="Invite codes"
+      description="Every code on the network. Revoke a code to stop it working immediately."
+      table="invites"
+      rows={(invites ?? []) as unknown as Record<string, unknown>[]}
+      columns={[
+        { key: "code", label: "Code", width: "14rem" },
+        { key: "note", label: "Note", width: "16rem" },
+        { key: "uses", label: "Uses", type: "number", width: "6rem" },
+        { key: "max_uses", label: "Max", type: "number", width: "6rem" },
+        { key: "expires_at", label: "Expires", type: "date", width: "13rem" },
+        { key: "is_revoked", label: "Revoked", type: "boolean" },
+      ]}
+      queryKeys={[["all_invites"], ["my_invites"]]}
+      newRowDefaults={{ code: "", note: "", max_uses: 1, uses: 0, is_revoked: false }}
+    />
+  );
+}
