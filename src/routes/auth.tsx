@@ -45,7 +45,7 @@ function AuthPage() {
         className="fixed inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(900px 420px at 50% -10%, oklch(0.66 0.2 300 / 0.18), transparent 70%), radial-gradient(700px 400px at 0% 100%, oklch(0.7 0.18 330 / 0.12), transparent 70%)",
+            "radial-gradient(900px 420px at 50% -10%, oklch(1 0 0 / 0.06), transparent 70%), radial-gradient(700px 400px at 0% 100%, oklch(1 0 0 / 0.04), transparent 70%)",
         }}
       />
       <div className="w-full max-w-md">
