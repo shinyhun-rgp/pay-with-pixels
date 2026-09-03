@@ -651,3 +651,37 @@ function ContactPanel() {
 }
 
 
+
+/** Owner view of every invite code minted on the network. */
+function InvitesPanel() {
+  const { data: invites } = useQuery({
+    queryKey: ["all_invites"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("invites")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  return (
+    <EntityTable
+      title="Invite codes"
+      description="Every code on the network. Revoke a code to stop it working immediately."
+      table="invites"
+      rows={(invites ?? []) as unknown as Record<string, unknown>[]}
+      columns={[
+        { key: "code", label: "Code", width: "14rem" },
+        { key: "note", label: "Note", width: "16rem" },
+        { key: "uses", label: "Uses", type: "number", width: "6rem" },
+        { key: "max_uses", label: "Max", type: "number", width: "6rem" },
+        { key: "expires_at", label: "Expires", type: "date", width: "13rem" },
+        { key: "is_revoked", label: "Revoked", type: "boolean" },
+      ]}
+      queryKeys={[["all_invites"], ["my_invites"]]}
+      newRowDefaults={{ code: "", note: "", max_uses: 1, uses: 0, is_revoked: false }}
+    />
+  );
+}
