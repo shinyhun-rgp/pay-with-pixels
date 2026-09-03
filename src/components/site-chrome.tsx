@@ -10,9 +10,31 @@ import { categoriesQuery, money, productPrice, productsQuery, settingsMap, setti
 const NAV = [
   { label: "STORE", to: "/" },
   { label: "FORUM", to: "/forum" },
+  { label: "INVITES", to: "/invites" },
   { label: "CONTACT", to: "/contact" },
   { label: "CART", to: "/cart" },
 ] as const;
+
+/** Sign-out control, shown only when a member is signed in. */
+function SessionControl() {
+  const { session } = useSession();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  if (!session) return null;
+  return (
+    <button
+      onClick={async () => {
+        await qc.cancelQueries();
+        qc.clear();
+        await supabase.auth.signOut();
+        navigate({ to: "/auth", replace: true });
+      }}
+      className="inline-flex items-center gap-1 text-[11px] font-mono tracking-widest text-foreground/60 hover:text-primary"
+    >
+      <LogOut className="h-3 w-3" /> SIGN OUT
+    </button>
+  );
+}
 
 
 export function useSettings() {
