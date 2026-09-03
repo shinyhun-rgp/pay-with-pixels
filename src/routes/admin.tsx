@@ -89,6 +89,7 @@ function AdminDashboard() {
           {tab === "Pages" && <PagesPanel />}
           {tab === "Guides" && <ForumPanel />}
           {tab === "Forum access" && <ForumAccessPanel />}
+          {tab === "Invites" && <InvitesPanel />}
           {tab === "Contact" && <ContactPanel />}
           {tab === "Orders" && <OrdersPanel />}
         </div>
