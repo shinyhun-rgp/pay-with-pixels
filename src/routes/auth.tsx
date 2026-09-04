@@ -61,9 +61,9 @@ function AuthPage() {
           </p>
         </div>
 
-        {loading || (session && memberLoading) ? (
+        {loading || (session && (memberLoading || adminLoading)) ? (
           <Card>Checking session…</Card>
-        ) : session && !isMember ? (
+        ) : session && !allowed ? (
           <RedeemCard onDone={() => qc.invalidateQueries()} email={session.user.email ?? ""} />
         ) : (
           <CredentialsCard />
