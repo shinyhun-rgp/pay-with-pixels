@@ -1,6 +1,6 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { useSession } from "@/lib/admin-auth";
+import { useIsAdmin, useSession } from "@/lib/admin-auth";
 import { useIsMember } from "@/lib/membership";
 
 const PUBLIC_PATHS = ["/auth"];
@@ -20,12 +20,13 @@ export function MembershipGate({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const { session, loading } = useSession();
   const { data: isMember, isLoading: memberLoading } = useIsMember(session?.user.id);
+  const { data: isAdmin, isLoading: adminLoading } = useIsAdmin(session?.user.id);
 
   useEffect(() => setHydrated(true), []);
 
   const open = isPublic(pathname);
-  const checking = loading || (Boolean(session) && memberLoading);
-  const allowed = Boolean(session) && isMember === true;
+  const checking = loading || (Boolean(session) && (memberLoading || adminLoading));
+  const allowed = Boolean(session) && (isMember === true || isAdmin === true);
 
   useEffect(() => {
     if (!hydrated || open || checking || allowed) return;
