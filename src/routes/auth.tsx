@@ -31,7 +31,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { session, loading } = useSession();
-  const { data: isMember } = useIsMember(session?.user.id);
+  const { data: isMember, isLoading: memberLoading } = useIsMember(session?.user.id);
 
   useEffect(() => {
     if (session && isMember) navigate({ to: "/", replace: true });
