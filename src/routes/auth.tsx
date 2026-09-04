@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { KeyRound, ShieldCheck, Terminal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@/lib/admin-auth";
+import { useIsAdmin, useSession } from "@/lib/admin-auth";
 import { redeemInvite, useIsMember } from "@/lib/membership";
 
 export const Route = createFileRoute("/auth")({
@@ -32,10 +32,12 @@ function AuthPage() {
   const qc = useQueryClient();
   const { session, loading } = useSession();
   const { data: isMember, isLoading: memberLoading } = useIsMember(session?.user.id);
+  const { data: isAdmin, isLoading: adminLoading } = useIsAdmin(session?.user.id);
+  const allowed = Boolean(session) && (isMember === true || isAdmin === true);
 
   useEffect(() => {
-    if (session && isMember) navigate({ to: "/", replace: true });
-  }, [session, isMember, navigate]);
+    if (allowed) navigate({ to: "/", replace: true });
+  }, [allowed, navigate]);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-6 py-16">
@@ -59,9 +61,9 @@ function AuthPage() {
           </p>
         </div>
 
-        {loading || (session && memberLoading) ? (
+        {loading || (session && (memberLoading || adminLoading)) ? (
           <Card>Checking session…</Card>
-        ) : session && !isMember ? (
+        ) : session && !allowed ? (
           <RedeemCard onDone={() => qc.invalidateQueries()} email={session.user.email ?? ""} />
         ) : (
           <CredentialsCard />
